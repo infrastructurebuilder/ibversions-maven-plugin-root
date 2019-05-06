@@ -22,15 +22,12 @@
   <groupId>org.infrastructurebuilder.maven</groupId>
   <artifactId>ibversions-maven-plugin</artifactId>
   <version>0.9.1-SNAPSHOT</version>
-
   <packaging>maven-plugin</packaging>
-
-
   <name>${project.artifactId}</name>
   <description>Produce a source artifact that describes the executing artifact</description>
   <inceptionYear>2019</inceptionYear>
 
-  <url>https://github.com/infrastructurebuilder/ibversions-maven-plugin</url>
+  <url>https://github.com/infrastructurebuilder/${project.artifactId}</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -64,6 +61,16 @@
     <tag>HEAD</tag>
   </scm>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
   <properties>
     <team.name>infrastructurebuilder</team.name>
     <compilerVersion>1.7</compilerVersion>
@@ -79,16 +86,6 @@
     <jacoco.skip>false</jacoco.skip>
   </properties>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
