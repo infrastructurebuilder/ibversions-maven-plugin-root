@@ -76,7 +76,7 @@
     <compilerVersion>1.7</compilerVersion>
     <mojo.java.target>1.8</mojo.java.target>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
-    <jacoco.version>0.8.3</jacoco.version>
+    <jacoco.version>0.8.4</jacoco.version>
     <jacoco.max.missed.classes>1</jacoco.max.missed.classes>
     <mavenVersion>3.0.5</mavenVersion>
     <jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>
