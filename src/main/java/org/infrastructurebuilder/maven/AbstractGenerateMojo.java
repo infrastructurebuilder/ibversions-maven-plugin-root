@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.zip.CRC32;
 
 import org.apache.maven.execution.MavenSession;
@@ -41,6 +42,8 @@ import org.apache.maven.shared.filtering.MavenResourcesExecution;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.codehaus.plexus.util.FileUtils;
 import org.sonatype.plexus.build.incremental.BuildContext;
+
+import com.vdurmont.semver4j.Semver;
 
 public abstract class AbstractGenerateMojo extends AbstractMojo {
   public static void cleanupTemporaryDirectory(final File temporaryDirectory) throws MojoExecutionException {
@@ -144,11 +147,23 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   @Parameter(required = false, readonly = false)
   protected File overriddenTemplateFile = null;
 
+  @Parameter(property = "apiPropertyName", required = false)
+  private String apiPropertyName;
+
   @Component(hint = "default")
   protected MavenResourcesFiltering mavenResourcesFiltering;
 
+  public Optional<String> getApiPropertyName() {
+    return Optional.ofNullable(apiPropertyName);
+  }
+
   @Override
   public void execute() throws MojoExecutionException {
+
+    Semver s = new Semver(project.getVersion());
+    String apiVersion = s.getMajor() + "." + s.getMinor();
+
+    getApiPropertyName().ifPresent(name -> project.getProperties().setProperty(name, apiVersion));
 
     final File sourceDirectory = getSourceDirectory();
 
