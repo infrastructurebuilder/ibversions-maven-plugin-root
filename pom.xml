@@ -16,7 +16,9 @@
     limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.infrastructurebuilder.maven</groupId>
@@ -76,7 +78,7 @@
   </distributionManagement>
   <properties>
     <team.name>infrastructurebuilder</team.name>
-    <compilerVersion>8</compilerVersion>
+    <compilerVersion>11</compilerVersion>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
     <jacoco.version>0.8.4</jacoco.version>
     <jacoco.max.missed.classes>1</jacoco.max.missed.classes>
@@ -94,11 +96,13 @@
       <artifactId>maven-model</artifactId>
       <version>${mavenVersion}</version>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>2.2.1</version>
     </dependency>
+     -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
@@ -114,6 +118,8 @@
       <artifactId>maven-artifact</artifactId>
       <version>${mavenVersion}</version>
     </dependency>
+    <!--
+     -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
@@ -234,8 +240,12 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M3</version>
           <configuration>
+            <forkCount>0</forkCount>
             <argLine>${surefireArgLine}</argLine>
-            <failIfNoTests>${surefire.failIfNoTests} --illegal-access=permit</failIfNoTests>
+            <failIfNoTests>${surefire.failIfNoTests}</failIfNoTests>
+            <!--
+              - -illegal-access=permit</failIfNoTests>
+             -->
             <trimStackTrace>false</trimStackTrace>
             <systemPropertyVariables>
               <target_dir>${project.build.directory}</target_dir>
@@ -246,7 +256,11 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.0.0-M3</version>
           <configuration>
-            <argLine>${failsafeArgLine} --illegal-access=permit</argLine>
+            <forkCount>0</forkCount>
+            <argLine>${failsafeArgLine}</argLine>
+            <!--
+             - -illegal-access=permit</argLine>
+             -->
             <trimStackTrace>false</trimStackTrace>
             <systemPropertyVariables>
             </systemPropertyVariables>
@@ -314,6 +328,14 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <source>${compilerVersion}</source>
+          <nohelp>true</nohelp>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
@@ -363,15 +385,18 @@
             <configuration>
               <haltOnFailure>true</haltOnFailure>
               <rules>
-                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                <rule
+                  implementation="org.jacoco.maven.RuleConfiguration">
                   <element>BUNDLE</element>
                   <limits>
-                    <limit implementation="org.jacoco.report.check.Limit">
+                    <limit
+                      implementation="org.jacoco.report.check.Limit">
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
                       <minimum>.${test.coverage.percentage.required}</minimum>
                     </limit>
-                    <limit implementation="org.jacoco.report.check.Limit">
+                    <limit
+                      implementation="org.jacoco.report.check.Limit">
                       <counter>CLASS</counter>
                       <value>MISSEDCOUNT</value>
                       <maximum>${jacoco.max.missed.classes}</maximum>
