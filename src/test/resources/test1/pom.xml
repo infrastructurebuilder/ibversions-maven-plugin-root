@@ -43,6 +43,9 @@
               <goal>generate-java-version</goal>
               <goal>generate-java-test-version</goal>
             </goals>
+            <configuration>
+              <apiVersionPropertyName>apiVersion</apiVersionPropertyName>
+            </configuration>
           </execution>
         </executions>
       </plugin>

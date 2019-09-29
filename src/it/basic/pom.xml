@@ -6,7 +6,7 @@
   <artifactId>basic</artifactId>
   <version>1.0</version>
   <properties>
-    <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+    <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
   </properties>
   <dependencies>
     <dependency>
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20180813</version>
+      <version>20190722</version>
     </dependency>
 
   </dependencies>
@@ -29,8 +29,11 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <release>11</release>
+          <!--
+          <source>1.8</source>
+          <target>1.8</target>
+           -->
         </configuration>
       </plugin>
       <plugin>

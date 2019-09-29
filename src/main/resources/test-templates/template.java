@@ -11,6 +11,7 @@ public final class Test@classFromProjectArtifactId@
       org.junit.Assert.assertEquals("Artifact id = @project.artifactId@", "@project.artifactId@", version.getString("artifactId"));
       org.junit.Assert.assertEquals("Version = @project.version@", "@project.version@", version.getString("version"));
       org.junit.Assert.assertEquals("Extension = @project.packaging@", "@project.packaging@", version.getString("extension"));
+      org.junit.Assert.assertTrue("Version starts with API version (not a great test)",  "@project.version@".startsWith(version.getString("apiVersion")));
 
 
     }

@@ -8,7 +8,10 @@ public final class @classFromProjectArtifactId@ {
       "," +
       "\"version\" : \"" + getVersion() + "\"" +
       "," +
+      "\"apiVersion\" : \"" + getApiVersion() + "\"" +
+      "," +
       "\"extension\" : \"" + getExtension() + "\"" +
+
       "}";
   public final static String getCoordinates() {
     return coordinates;
@@ -24,5 +27,10 @@ public final class @classFromProjectArtifactId@ {
   }
   public final static String getArtifactId() {
     return "@project.artifactId@";
+  }
+
+  public final static String getApiVersion() {
+    String[] v = getVersion().split("\\.");
+    return v[0]+"." + v[1]; // This is risky
   }
 }

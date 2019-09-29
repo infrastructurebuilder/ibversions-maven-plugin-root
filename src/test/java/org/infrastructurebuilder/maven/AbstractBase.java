@@ -89,6 +89,7 @@ public abstract class AbstractBase {
   @Before
   public void before() throws IOException {
     final File target = resolve(getProject().getBasedir(), outputDirectory.getPath());
+    mojo.setApiVersionPropertyName("apiVersion");
     FileUtils.forceDelete(target);
   }
 
