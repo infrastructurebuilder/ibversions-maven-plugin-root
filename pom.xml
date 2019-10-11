@@ -148,7 +148,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -207,12 +207,12 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration>
-            <release>${compilerVersion}</release>
           <!--
+            <release>${compilerVersion}</release>
 
+           -->
             <source>${compilerVersion}</source>
             <target>${compilerVersion}</target>
-           -->
           </configuration>
         </plugin>
         <plugin>
