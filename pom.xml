@@ -76,7 +76,7 @@
   </distributionManagement>
   <properties>
     <team.name>infrastructurebuilder</team.name>
-    <compilerVersion>11</compilerVersion>
+    <compilerVersion>1.8</compilerVersion>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
     <jacoco.version>0.8.4</jacoco.version>
     <jacoco.max.missed.classes>1</jacoco.max.missed.classes>
@@ -207,10 +207,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration>
-          <!--
-            <release>${compilerVersion}</release>
-
-           -->
+          <!-- <release>${compilerVersion}</release> -->
             <source>${compilerVersion}</source>
             <target>${compilerVersion}</target>
           </configuration>
