@@ -1,7 +1,7 @@
 package @project.groupId@;
 
 public final class @classFromProjectArtifactId@ {
-   final static String coordinates = "{" +
+  final static String coordinates = "{" +
       "\"groupId\"  : \"" + getGroupId() + "\"" +
       "," +
       "\"artifactId\" : \"" + getArtifactId() + "\"" +
@@ -13,9 +13,18 @@ public final class @classFromProjectArtifactId@ {
       "\"extension\" : \"" + getExtension() + "\"" +
 
       "}";
-  public final static String getCoordinates() {
-    return coordinates;
-  }
+  final static String xml = "<gav>" +
+      "<groupId>"+ getGroupId() + "</groupId>" +
+      "<artifactId>" + getArtifactId() + "</artifactId>" +
+      "<version>" + getVersion() + "</version>" +
+      "<extension>" + getExtension() + "</extension>" +
+      "</gav>";
+   public final static String getJSONCoordinates() {
+     return coordinates;
+   }
+   public final static String getXMLCoordinates() {
+     return xml;
+   }
   public final static String getVersion() {
     return "@project.version@";
   }
