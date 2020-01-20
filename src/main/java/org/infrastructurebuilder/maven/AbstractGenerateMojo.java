@@ -15,6 +15,8 @@
  */
 package org.infrastructurebuilder.maven;
 
+import static java.util.Collections.emptyList;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -188,7 +189,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     copied = 0;
     project.getProperties().put("classFromProjectArtifactId", getClassNameFromArtifactId());
     final File temporaryDirectory = getTemporaryDirectory(sourceDirectory);
-    logInfo("Coping files with filtering to temporary directory.");
+    logInfo("Copying files with filtering to temporary directory.");
     logDebug("Temporary director for filtering is: %s", temporaryDirectory);
     filterSourceToTemporaryDir(sourceDirectory, temporaryDirectory);
 
@@ -229,7 +230,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     resources.add(resource);
 
     final MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution(resources, temporaryDirectory,
-        project, encoding, Collections.<String>emptyList(), Collections.<String>emptyList(), session);
+        project, encoding, emptyList(), emptyList(), session);
     mavenResourcesExecution.setInjectProjectBuildFilters(true);
     mavenResourcesExecution.setEscapeString(escapeString);
     mavenResourcesExecution.setOverwrite(true);
@@ -299,14 +300,16 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     if (overriddenGeneratedClassName != null)
       return overriddenGeneratedClassName;
 
-    final String nonJavaMethodName = project.getArtifactId();
+    final String nonJavaMethodName = project.getGroupId() + "_"+project.getArtifactId() + "_"+project.getVersion();
     final StringBuilder nameBuilder = new StringBuilder();
     boolean capitalizeNextChar = true;
     boolean first = true;
 
     for (int i = 0; i < nonJavaMethodName.length(); i++) {
-      final char c = nonJavaMethodName.charAt(i);
-      if (!Character.isLetterOrDigit(c)) {
+      char c = nonJavaMethodName.charAt(i);
+      if (c == '.')
+        c = '_';
+      if (c != '_' && !Character.isLetterOrDigit(c)) {
         if (!first) {
           capitalizeNextChar = true;
         }

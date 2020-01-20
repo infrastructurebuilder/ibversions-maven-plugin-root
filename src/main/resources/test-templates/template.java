@@ -13,6 +13,8 @@ public final class Test@classFromProjectArtifactId@
       org.junit.Assert.assertEquals("Version = @project.version@", "@project.version@", version.getString("version"));
       org.junit.Assert.assertEquals("Extension = @project.packaging@", "@project.packaging@", version.getString("extension"));
       org.junit.Assert.assertTrue("Version starts with API version (not a great test)",  "@project.version@".startsWith(version.getString("apiVersion")));
+      org.junit.Assert.assertTrue("String contains artifactId",  new @classFromProjectArtifactId@().getArtifact().get().contains("@project.artifactId@"));
+      org.junit.Assert.assertTrue("Api contains api", "@project.version@".startsWith(new @classFromProjectArtifactId@().getAPIVersion().get()));
 
 
     }

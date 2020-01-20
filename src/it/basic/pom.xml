@@ -20,6 +20,11 @@
       <artifactId>json</artifactId>
       <version>20190722</version>
     </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
 
   </dependencies>
   <build>
@@ -49,6 +54,7 @@
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>

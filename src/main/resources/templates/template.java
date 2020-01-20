@@ -1,6 +1,10 @@
 package @project.groupId@;
 
-public final class @classFromProjectArtifactId@ {
+@javax.inject.Named(
+      @classFromProjectArtifactId@ .COMPONENTVERSIONNAME)
+@javax.inject.Singleton
+public final class @classFromProjectArtifactId@ implements org.infrastructurebuilder.IBVersionsSupplier {
+  public final static String COMPONENTVERSIONNAME = "@project.groupId@:@project.artifactId@:@project.version@";
   final static String coordinates = "{" +
       "\"groupId\"  : \"" + getGroupId() + "\"" +
       "," +
@@ -41,5 +45,15 @@ public final class @classFromProjectArtifactId@ {
   public final static String getApiVersion() {
     String[] v = getVersion().split("\\.");
     return v[0]+"." + v[1]; // This is risky
+  }
+
+  @javax.inject.Inject
+  public @classFromProjectArtifactId@() {
+  }
+  public java.util.function.Supplier<String> getArtifact() {
+    return () -> @classFromProjectArtifactId@.COMPONENTVERSIONNAME;
+ }
+  public java.util.function.Supplier<String> getAPIVersion() {
+    return () -> getApiVersion();
   }
 }
