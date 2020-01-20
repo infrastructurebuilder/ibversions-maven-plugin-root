@@ -15,7 +15,10 @@
  */
 package org.infrastructurebuilder.maven;
 
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.newOutputStream;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +30,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.zip.CRC32;
 
@@ -57,8 +59,8 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
 
   public static void copy(final InputStream source, final OutputStream sink) throws IOException {
     final byte[] buffer = new byte[10240];
-    for (int n = 0; (n = Objects.requireNonNull(source, "source").read(buffer)) > 0;) {
-      Objects.requireNonNull(sink, "sink").write(buffer, 0, n);
+    for (int n = 0; (n = requireNonNull(source, "source").read(buffer)) > 0;) {
+      requireNonNull(sink, "sink").write(buffer, 0, n);
     }
     return;
   }
@@ -300,7 +302,10 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     if (overriddenGeneratedClassName != null)
       return overriddenGeneratedClassName;
 
-    final String nonJavaMethodName = project.getGroupId() + "_"+project.getArtifactId() + "_"+project.getVersion();
+    String ver = project.getVersion();
+    if (ver.toLowerCase().endsWith("-snapshot"))
+      ver = ver.substring(0, ver.length() - 9); // Remove snapshotting
+    final String nonJavaMethodName = project.getArtifactId();
     final StringBuilder nameBuilder = new StringBuilder();
     boolean capitalizeNextChar = true;
     boolean first = true;
@@ -327,7 +332,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
 
   protected Path getResourcePathString() throws MojoExecutionException {
     final Path filePath = Paths
-        .get(getWorkDirectory().toString(), Objects.requireNonNull(project.getGroupId()).split("\\."))
+        .get(getWorkDirectory().toString(), requireNonNull(project.getGroupId()).split("\\."))
         .resolve((isTestGeneration() ? "Test" : "") + getClassNameFromArtifactId() + "." + getType());
     final Path tPath = getWorkDirectory().resolve(filePath).toAbsolutePath();
     getLog().info("writing template to " + tPath.toAbsolutePath());
@@ -338,14 +343,14 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
         Files.createDirectories(parents);
       }
       if (overriddenTemplateFile != null) {
-        try (InputStream ins = Files.newInputStream(overriddenTemplateFile.toPath());
-            OutputStream os = Files.newOutputStream(tPath)) {
+        try (InputStream ins = newInputStream(overriddenTemplateFile.toPath());
+            OutputStream os = newOutputStream(tPath)) {
           copy(ins, os);
         }
       } else {
         final String rPath = "/" + (isTestGeneration() ? "test-" : "") + "templates/" + "template." + getType();
         getLog().info("Target path for copied resource is " + tPath);
-        try (InputStream res = getClass().getResourceAsStream(rPath); OutputStream os = Files.newOutputStream(tPath)) {
+        try (InputStream res = getClass().getResourceAsStream(rPath); OutputStream os = newOutputStream(tPath)) {
           copy(res, os);
         }
       }

@@ -6,22 +6,22 @@ package @project.groupId@;
 public final class @classFromProjectArtifactId@ implements org.infrastructurebuilder.IBVersionsSupplier {
   public final static String COMPONENTVERSIONNAME = "@project.groupId@:@project.artifactId@:@project.version@";
   final static String coordinates = "{" +
-      "\"groupId\"  : \"" + getGroupId() + "\"" +
+      "\"groupId\"  : \"" + groupId() + "\"" +
       "," +
-      "\"artifactId\" : \"" + getArtifactId() + "\"" +
+      "\"artifactId\" : \"" + artifactId() + "\"" +
       "," +
-      "\"version\" : \"" + getVersion() + "\"" +
+      "\"version\" : \"" + version() + "\"" +
       "," +
-      "\"apiVersion\" : \"" + getApiVersion() + "\"" +
+      "\"apiVersion\" : \"" + apiVersion() + "\"" +
       "," +
-      "\"extension\" : \"" + getExtension() + "\"" +
+      "\"extension\" : \"" + extension() + "\"" +
 
       "}";
   final static String xml = "<gav>" +
-      "<groupId>"+ getGroupId() + "</groupId>" +
-      "<artifactId>" + getArtifactId() + "</artifactId>" +
-      "<version>" + getVersion() + "</version>" +
-      "<extension>" + getExtension() + "</extension>" +
+      "<groupId>"+ groupId() + "</groupId>" +
+      "<artifactId>" + artifactId() + "</artifactId>" +
+      "<version>" + version() + "</version>" +
+      "<extension>" + extension() + "</extension>" +
       "</gav>";
    public final static String getJSONCoordinates() {
      return coordinates;
@@ -29,31 +29,41 @@ public final class @classFromProjectArtifactId@ implements org.infrastructurebui
    public final static String getXMLCoordinates() {
      return xml;
    }
-  public final static String getVersion() {
+  public final static String version() {
     return "@project.version@";
   }
-  public final static String getExtension() {
+  public final static String extension() {
     return "@project.packaging@";
   }
-  public final static String getGroupId() {
+  public final static String groupId() {
     return "@project.groupId@";
   }
-  public final static String getArtifactId() {
+  public final static String artifactId() {
     return "@project.artifactId@";
   }
 
-  public final static String getApiVersion() {
-    String[] v = getVersion().split("\\.");
+  public final static String apiVersion() {
+    String[] v = version().split("\\.");
     return v[0]+"." + v[1]; // This is risky
   }
 
   @javax.inject.Inject
   public @classFromProjectArtifactId@() {
   }
-  public java.util.function.Supplier<String> getArtifact() {
-    return () -> @classFromProjectArtifactId@.COMPONENTVERSIONNAME;
- }
+
+  public java.util.function.Supplier<String> getGroupId() {
+    return () -> @classFromProjectArtifactId@.groupId();
+  }
+  public java.util.function.Supplier<String> getArtifactId() {
+    return () -> @classFromProjectArtifactId@.artifactId();
+  }
+  public java.util.function.Supplier<String> getVersion() {
+    return () -> @classFromProjectArtifactId@.version();
+  }
+  public java.util.function.Supplier<String> getExtension() {
+    return () -> @classFromProjectArtifactId@.extension();
+  }
   public java.util.function.Supplier<String> getAPIVersion() {
-    return () -> getApiVersion();
+    return () -> @classFromProjectArtifactId@.apiVersion();
   }
 }
