@@ -3,7 +3,7 @@ package @project.groupId@;
 @javax.inject.Named(
       @classFromProjectArtifactId@ .COMPONENTVERSIONNAME)
 @javax.inject.Singleton
-public final class @classFromProjectArtifactId@ implements org.infrastructurebuilder.IBVersionsSupplier {
+public final class @classFromProjectArtifactId@ implements org.infrastructurebuilder.util.versions.IBVersionsSupplier {
   public final static String COMPONENTVERSIONNAME = "@project.groupId@:@project.artifactId@:@project.version@";
   final static String coordinates = "{" +
       "\"groupId\"  : \"" + groupId() + "\"" +

@@ -7,6 +7,7 @@
   <version>1.0</version>
   <properties>
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+    <ibexceptions.version>46</ibexceptions.version>
   </properties>
   <dependencies>
     <dependency>
@@ -18,12 +19,17 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20190722</version>
+      <version>20210307</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder</groupId>
+      <artifactId>ibexceptions</artifactId>
+      <version>${ibexceptions.version}</version>
     </dependency>
 
   </dependencies>
@@ -34,9 +40,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <!--
-          <release>1.8</release>
-           -->
+          <!-- <release>1.8</release> -->
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
