@@ -67,7 +67,7 @@
   </distributionManagement>
   <properties>
     <team.name>infrastructurebuilder</team.name>
-    <maven.import.bom.version>3.6.3.4</maven.import.bom.version>
+    <maven.import.bom.version>3.6.3.5</maven.import.bom.version>
     <compilerVersion>1.8</compilerVersion>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
     <test.plugin.version>3.0.0-M4</test.plugin.version>
