@@ -58,16 +58,16 @@
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
     <repository>
       <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>
   <properties>
     <team.name>infrastructurebuilder</team.name>
-    <maven.import.bom.version>3.6.3.2</maven.import.bom.version>
+    <maven.import.bom.version>3.6.3.5</maven.import.bom.version>
     <compilerVersion>1.8</compilerVersion>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
     <test.plugin.version>3.0.0-M4</test.plugin.version>
@@ -78,7 +78,8 @@
     <jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.data</jacoco.ut.execution.data.file>
     <jacoco.ut.execution.dest.file>${jacoco.ut.execution.data.file}</jacoco.ut.execution.dest.file>
     <jacoco.skip>false</jacoco.skip>
-    <semver4j.version>3.1.0</semver4j.version>
+    <semver4j.version>3.2.0.3</semver4j.version>
+    <ibexceptions.version>46</ibexceptions.version>
   </properties>
 
   <dependencyManagement>
@@ -137,7 +138,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.vdurmont</groupId>
+      <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
       <version>${semver4j.version}</version>
     </dependency>
