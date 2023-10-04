@@ -12,7 +12,7 @@
 
   <groupId>org.infrastructurebuilder.maven</groupId>
   <artifactId>ibversions-maven-plugin</artifactId>
-  <version>0.15.3-SNAPSHOT</version>
+  <version>0.16.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>${project.artifactId}</name>
   <description>Produce a source artifact that describes the executing artifact</description>
@@ -79,7 +79,7 @@
     <jacoco.ut.execution.dest.file>${jacoco.ut.execution.data.file}</jacoco.ut.execution.dest.file>
     <jacoco.skip>false</jacoco.skip>
     <semver4j.version>3.2.0.3</semver4j.version>
-    <ibexceptions.version>52</ibexceptions.version>
+    <ibexceptions.version>90</ibexceptions.version>
   </properties>
 
   <dependencyManagement>
