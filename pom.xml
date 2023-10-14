@@ -89,7 +89,7 @@ permissions
     <jacoco.skip>false</jacoco.skip>
     <semver4j.version>3.2.0.3</semver4j.version>
     <ibexceptions.version>90</ibexceptions.version>
-    <iblog.version>0.14.4-SNAPSHOT</iblog.version>
+    <iblog.version>0.14.3</iblog.version>
 
   </properties>
 
@@ -165,7 +165,7 @@ permissions
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
-      <version>0.20.1-SNAPSHOT</version>
+      <version>0.20.0</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
