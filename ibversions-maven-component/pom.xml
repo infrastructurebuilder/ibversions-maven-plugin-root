@@ -54,11 +54,9 @@
       <artifactId>iblog-maven-component</artifactId>
       <version>${iblog.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
-      <version>0.20.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
