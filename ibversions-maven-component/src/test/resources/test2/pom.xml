@@ -43,7 +43,7 @@
           <execution>
             <id>test-template</id>
             <goals>
-              <goal>generate-java-test-version</goal>
+              <goal>generate-test-version</goal>
             </goals>
             <configuration>
               <overriddenGeneratedClassName>X</overriddenGeneratedClassName>

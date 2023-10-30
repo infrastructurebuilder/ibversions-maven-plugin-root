@@ -15,8 +15,10 @@
  */
 package org.infrastructurebuilder.maven;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
-import java.util.Objects;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,9 +29,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
-@Mojo(name = "generate-java-version", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = false)
+@Mojo(name = GenerateJavaMojo.GENERATE_JAVA_VERSION, defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = false)
 public class GenerateJavaMojo extends AbstractGenerateMojo {
 
+
+  public static final String GENERATE_JAVA_VERSION = "generate-source-version";
 
   @Parameter(defaultValue = "${project.build.directory}/generated-sources/generated-version", required = true, readonly = true)
   private File outputDirectory;
@@ -37,19 +41,24 @@ public class GenerateJavaMojo extends AbstractGenerateMojo {
   @Parameter(defaultValue = "${project.build.directory}/generate-version", required = true, readonly = false)
   private File workDirectory;
 
-  private final GeneratorComponent component;
+  @Override
+  protected String getType() {
+    return "java";
+  }
 
   @Override
-  GeneratorComponent getComponent() {
-    component.setOutputDirectory(this.outputDirectory);
-    component.setWorkDirectory(this.workDirectory);
-    return component;
+  protected File getOutputDirectory() {
+    return requireNonNull(this.outputDirectory);
+  }
+
+  @Override
+  protected File getWorkDirectory() {
+    return requireNonNull(this.workDirectory);
   }
 
   @Inject
-  public GenerateJavaMojo(BuildContext b, @Named("default") MavenResourcesFiltering f,@Named(JavaGeneratorComponent.JAVA) GeneratorComponent c) {
-    super(b,f);
-    this.component = Objects.requireNonNull(c);
+  public GenerateJavaMojo(BuildContext b, @Named("default") MavenResourcesFiltering f, Map<String, GeneratorComponent> components) {
+    super(b,f,components);
   }
 
 }

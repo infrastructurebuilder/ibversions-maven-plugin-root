@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -80,6 +79,8 @@ public class ProjectStub extends MavenProject {
     final List<String> testCompileSourceRoots = new ArrayList<String>();
     testCompileSourceRoots.add(getBasedir() + "/src/test/java");
     setTestCompileSourceRoots(testCompileSourceRoots);
+
+
   }
 
 }

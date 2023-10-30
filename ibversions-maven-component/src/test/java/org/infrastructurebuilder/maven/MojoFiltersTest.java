@@ -17,25 +17,23 @@ package org.infrastructurebuilder.maven;
 
 import static org.junit.Assert.assertFalse;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.infrastructurebuilder.util.logging.LoggingMavenComponent;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MojoFiltersTest {
-  private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final Log log = new LoggingMavenComponent(logger);
+  private final org.codehaus.plexus.logging.Logger logger = new ConsoleLogger();
   @Test
-  public void dontAddSourceFolder() {
+  public void dontAddSourceFolder() throws IOException {
     final StringBuilder placeholder = new StringBuilder();
     final JavaGeneratorComponent jc = new JavaGeneratorComponent();
-    jc.setLog(log);
-    jc.setOutputDirectory(new File("."));
-    File f = jc.getOutputDirectory();
+    jc.enableLogging(logger);
+    jc.setOutputDirectory(Paths.get("."));
+    Path f = jc.getOutputDirectory();
 
     final MavenProject mock = new MavenProject();
 

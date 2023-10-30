@@ -76,7 +76,7 @@ permissions
     <team.name>infrastructurebuilder</team.name>
     <maven.version>3.8.3</maven.version>
     <maven.import.bom.version>3.8.3.0</maven.import.bom.version>
-    <compilerVersion>17</compilerVersion>
+    <compilerVersion>11</compilerVersion>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
     <test.plugin.version>3.1.2</test.plugin.version>
     <jacoco.version>0.8.10</jacoco.version>
@@ -88,8 +88,8 @@ permissions
     <jacoco.ut.execution.dest.file>${jacoco.ut.execution.data.file}</jacoco.ut.execution.dest.file>
     <jacoco.skip>false</jacoco.skip>
     <semver4j.version>3.2.0.3</semver4j.version>
-    <ibexceptions.version>90</ibexceptions.version>
-    <iblog.version>0.14.3</iblog.version>
+    <ibexceptions.version>91-SNAPSHOT</ibexceptions.version>
+    <iblog.version>0.14.4-SNAPSHOT</iblog.version>
 
   </properties>
 
@@ -111,7 +111,6 @@ permissions
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-filtering</artifactId>
       <version>3.2.0</version>
-      <scope>provided</scope>
     </dependency>
         <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -120,11 +119,6 @@ permissions
       <version>3.8.2</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -151,7 +145,7 @@ permissions
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
-      <version>0.20.0</version>
+      <version>0.20.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
@@ -399,20 +393,6 @@ permissions
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-component-metadata</artifactId>
-        <version>2.1.1</version>
-        <executions>
-          <execution>
-            <id>process-classes</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>generate-metadata</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <groupId>org.sonatype.plugins</groupId>

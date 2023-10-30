@@ -16,57 +16,50 @@
 package org.infrastructurebuilder.maven;
 
 import static org.infrastructurebuilder.maven.IBVersionsUtils.copyTree;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.DefaultMavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.DefaultMavenFileFilter;
 import org.apache.maven.shared.filtering.DefaultMavenResourcesFiltering;
 import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.infrastructurebuilder.exceptions.IBException;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.infrastructurebuilder.util.logging.LoggingMavenComponent;
 import org.joor.Reflect;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
 import org.sonatype.plexus.build.incremental.DefaultBuildContext;
 
 public abstract class AbstractBase {
 
+  public static final String API_VERSION = "apiVersion";
+
   private final static TestingPathSupplier tps = new TestingPathSupplier();
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final Log log = new LoggingMavenComponent(logger);
-  @Mock
-  private MavenSession session;
   protected MavenFileFilter filter = new DefaultMavenFileFilter();
   protected MavenResourcesFiltering filtering = new DefaultMavenResourcesFiltering();
-  private MavenProject _project;
-  private File _workDirectory;
-  protected File outputDirectory;
+  private MavenProject testProject;
+  private Path testWorkDirectory;
+  protected Path testOutputDirectory;
 
   protected BuildContext buildContext = new DefaultBuildContext();
 
-
   protected GeneratorComponent component;
+
+  private ConsoleLogger pLogger;
+
+  private String encoding = "UTF-8";
 
   public AbstractBase() {
     super();
@@ -89,67 +82,93 @@ public abstract class AbstractBase {
     getTps().finalize();
   }
 
+  @SuppressWarnings("deprecation")
   @Before
   public void before() throws Throwable {
-    org.codehaus.plexus.logging.Logger pLogger = new ConsoleLogger();
-    MockitoAnnotations.initMocks(this);
+    pLogger = new ConsoleLogger();
     Reflect.on(filter) //
-    .set("logger", pLogger) //
-    .set("buildContext", buildContext);
+        .set("logger", pLogger) //
+        .set("buildContext", buildContext);
     Reflect.on(filtering) //
-    .set("mavenFileFilter", filter) //
-    .set("buildContext", buildContext) //
-    .set("logger", pLogger);
-    _project = getProject();
-    Path targetDir = Paths.get(_project.getBuild().getOutputDirectory());
+        .set("mavenFileFilter", filter) //
+        .set("buildContext", buildContext) //
+        .set("logger", pLogger);
+    testProject = getProject();
+    Path targetDir = Paths.get(testProject.getBuild().getDirectory());
 
     this.component = getComponent();
-    _workDirectory = targetDir.resolve("generate-version").toFile();
-    outputDirectory = targetDir.resolve("generated-sources").resolve("generated-version-templates").toFile();
+    testWorkDirectory = targetDir.resolve("generate-version");
+    testOutputDirectory = targetDir.resolve("generated-sources").resolve("generated-version-templates");
 
+    final Path target = testProject.getBasedir().toPath().resolve(testOutputDirectory);
+    FileUtils.deleteQuietly(target.toFile());
 
-    final File target = _project.getBasedir().toPath().resolve(outputDirectory.toPath()).toFile();
-    FileUtils.deleteQuietly(target);
-
-    MavenExecutionRequest req  = new DefaultMavenExecutionRequest();
-    session = new MavenSession(null, req  , null, _project);
-
-    this.component.setProject(_project);
-    this.component.setSession(session);
-    this.component.setBuildContext(buildContext);
+    this.component.setOutputDirectory(testOutputDirectory);
+    this.component.setWorkDirectory(testWorkDirectory);
     this.component.setMavenResourcesFiltering(filtering);
-    this.component.setApiVersionPropertyName("apiVersion");
-    this.component.setWorkDirectory(_workDirectory);
-    this.component.setOutputDirectory(outputDirectory);
-    this.component.setLog(log);
+    this.component.setBuildContext(buildContext);
+    this.component.setOverriddenGeneratedClassName(null);
+    this.component.setOverriddenTemplateFile(IBVersionsUtils.pathOrNull(null));
+    this.component.setProject(testProject);
+    this.component.setSession(new MavenSession(null, new DefaultMavenExecutionRequest(), new DefaultMavenExecutionResult(), testProject));
+    this.component.setEncoding(this.encoding);
+    this.component.setApiVersionPropertyName(API_VERSION);
+    this.component.enableLogging(pLogger);
+  }
+
+  @Test
+  public void testCopy() throws IOException {
+    Path source = getTps().get();
+    Path c = Paths.get("A").resolve("B").resolve("C");
+    Path e = Paths.get("A").resolve("D").resolve("E");
+    Path one = source.resolve(c);
+    Path two = source.resolve(e);
+
+    Files.createDirectories(one);
+    Files.createDirectories(two);
+
+    Path tempX = Files.createTempFile(one, "X", ".y");
+
+    Path nameX = tempX.getFileName();
+    Path tempZ = Files.createTempFile(two, "Z", ".y");
+    Path nameZ = tempZ.getFileName();
+
+    Path dest = getTps().get();
+    Path targetX = dest.resolve(c).resolve(nameX);
+    Path targetZ = dest.resolve(e).resolve(nameZ);
+
+    copyTree(source, dest, pLogger);
+
+    assertTrue(Files.isRegularFile(targetX));
+    assertTrue(Files.isRegularFile(targetZ));
+
   }
 
   @Test(expected = NullPointerException.class)
   public void testCopyDirectoryStructionWithIO() throws IOException {
-    copyTree(null, null, null, log);
+    copyTree(null, null, pLogger);
   }
 
   @Test(expected = NullPointerException.class)
   public void testCopyDirectoryStructionWithIO2() throws IOException {
-    copyTree(new File("X"), null, null, log);
+    copyTree(Paths.get("X"), null, pLogger);
   }
 
   @Test(expected = IOException.class)
   public void testCopyDirectoryStructionWithIO3() throws IOException {
-    copyTree(new File("X"), new File("X"), null, log);
+    copyTree(Paths.get("X"), Paths.get("X"), pLogger);
   }
 
   @Test(expected = IOException.class)
   public void testCopyDirectoryStructionWithIO4() throws IOException {
-    copyTree(new File("X"), new File("Z"), new File("Y"), log);
+    copyTree(Paths.get("X"), Paths.get("Z"), pLogger);
   }
 
-  public Log getLog() {
-    return log;
+  public ConsoleLogger getLog() {
+    return pLogger;
   }
 
   abstract protected MavenProject getProject() throws Throwable;
-
 
   abstract protected GeneratorComponent getComponent();
 

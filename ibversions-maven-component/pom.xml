@@ -16,6 +16,7 @@
   <properties>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
     <jacoco.max.missed.classes>1</jacoco.max.missed.classes>
+    <maven.compiler.jdk.version>11</maven.compiler.jdk.version>
   </properties>
   <dependencies>
 
@@ -47,12 +48,10 @@
     <dependency>
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
-      <version>${semver4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
       <artifactId>iblog-maven-component</artifactId>
-      <version>${iblog.version}</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
@@ -61,14 +60,12 @@
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
       <artifactId>iblogconfig</artifactId>
-      <version>${iblog.version}</version>
       <classifier>debug</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jooq</groupId>
       <artifactId>joor</artifactId>
-      <version>0.9.15</version>
     </dependency>
   </dependencies>
 
@@ -95,6 +92,7 @@
             <id>generate-index</id>
             <goals>
               <goal>main-index</goal>
+              <goal>test-index</goal>
             </goals>
           </execution>
         </executions>

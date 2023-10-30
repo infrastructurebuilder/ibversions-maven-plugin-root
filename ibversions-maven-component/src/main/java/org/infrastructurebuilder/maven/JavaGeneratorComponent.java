@@ -13,7 +13,7 @@ public class JavaGeneratorComponent extends GeneratorComponent {
 
   @Override
   protected void addSourceFolderToProject(final MavenProject mavenProject) {
-    mavenProject.addCompileSourceRoot(getOutputDirectory().getAbsolutePath());
+    mavenProject.addCompileSourceRoot(getOutputDirectory().toString());
   }
 
 }

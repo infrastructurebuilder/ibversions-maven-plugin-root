@@ -18,9 +18,6 @@ package org.infrastructurebuilder.maven;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,10 +27,7 @@ import java.nio.file.Paths;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.MavenFilteringException;
-import org.apache.maven.shared.filtering.MavenResourcesExecution;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 
 public class Mojo1Test extends AbstractBase {
   private MavenProject project;
@@ -52,11 +46,9 @@ public class Mojo1Test extends AbstractBase {
 
   @Test
   public void testExecute() throws Throwable {
-    GeneratorComponent c = this.component;
-    c.setOverriddenTemplateFile(null);
-
-    c.execute();
-    assertEquals(1, c.countCopiedFiles());
+    this.component.setOverriddenTemplateFile(null);
+    this.component.execute();
+    assertEquals(1, this.component.countCopiedFiles());
 
 //    verify(filtering, times(1)).filterResources(any(MavenResourcesExecution.class));
 //    verify(buildContext, times(1)).refresh(outputDirectory);
@@ -64,23 +56,22 @@ public class Mojo1Test extends AbstractBase {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testExecuteSetNullSource() throws MojoExecutionException, MavenFilteringException {
+  public void testExecuteSetNullSource() throws MojoExecutionException, MavenFilteringException, IOException {
     this.component.setWorkDirectory(null);
   }
 
   @Test
   public void testGetOutputDirectory() {
 
-    final File file = this.component.getOutputDirectory();
+    final Path file = this.component.getOutputDirectory();
     assertNotNull(file);
-    assertNotNull(file.getPath());
-    assertTrue(file.getPath().contains("generated-version-templates"));
+    assertTrue(file.toString().contains("generated-version-templates"));
   }
 
   @Override
   protected GeneratorComponent getComponent() {
     JavaGeneratorComponent jc = new JavaGeneratorComponent();
-    jc.setLog(getLog());
+    jc.enableLogging(getLog());
     return jc;
   }
 }

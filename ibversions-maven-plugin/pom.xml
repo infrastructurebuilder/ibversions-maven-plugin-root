@@ -78,7 +78,6 @@ permissions
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-filtering</artifactId>
-      <scope>provided</scope>
     </dependency>
     <!--
     <dependency>
@@ -436,6 +435,7 @@ permissions
           <plugin>
             <artifactId>maven-invoker-plugin</artifactId>
             <configuration>
+              <skipInvocation>false</skipInvocation>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <cloneClean>true</cloneClean>
               <postBuildHookScript>verify</postBuildHookScript>

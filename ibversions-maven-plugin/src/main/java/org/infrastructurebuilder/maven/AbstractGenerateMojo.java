@@ -15,11 +15,11 @@
  */
 package org.infrastructurebuilder.maven;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
-
-import javax.inject.Named;
+import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -35,8 +35,8 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project.build.sourceEncoding}")
   private String encoding;
 
-  @Parameter(property = "maven.resources.escapeString")
-  protected String escapeString;
+//  @Parameter(property = "maven.resources.escapeString") // TODO Maybe?
+//  protected String escapeString;
 
   @Parameter(defaultValue = "${session}", required = true, readonly = true)
   private MavenSession session;
@@ -50,6 +50,9 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   @Parameter(required = false, readonly = false)
   protected File overriddenTemplateFile = null;
 
+  @Parameter(required = false, readonly = true)
+  private String hint;
+
   @Parameter(property = "apiVersionPropertyName", required = false)
   private String apiVersionPropertyName;
 
@@ -57,40 +60,53 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
 
   protected final MavenResourcesFiltering mavenResourcesFiltering;
 
-  public AbstractGenerateMojo(BuildContext b, @Named("default") MavenResourcesFiltering f) {
-    this.buildContext = Objects.requireNonNull(b);
-    this.mavenResourcesFiltering = Objects.requireNonNull(f);
+  private final GeneratorComponent component;
+
+  public AbstractGenerateMojo(BuildContext b, MavenResourcesFiltering f, Map<String, GeneratorComponent> components) {
+    this.buildContext = requireNonNull(b);
+    this.mavenResourcesFiltering = requireNonNull(f);
+    // IF there is a hint, use that to lookup component. Otherwise type
+    getLog().debug("Looking for hint = " + this.hint + " or type = " + getType());
+
+    this.component = requireNonNull(components.get(this.hint == null ? getType() : this.hint), "No viable components");
   }
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    GeneratorComponent comp = getComponent();
-    comp.setMavenResourcesFiltering(this.mavenResourcesFiltering);
-    comp.setBuildContext(this.buildContext);
-    comp.setOverriddenGeneratedClassName(this.overriddenGeneratedClassName);
-    comp.setOverriddenTemplateFile(this.overriddenTemplateFile);
-    comp.setProject(this.project);
-    comp.setSession(this.session);
-    comp.setEncoding(this.encoding);
-    comp.setApiVersionPropertyName(this.apiVersionPropertyName);
     try {
-      comp.execute();
+      this.component.setOutputDirectory(getOutputDirectory().toPath());
+      this.component.setWorkDirectory(getWorkDirectory().toPath());
+      this.component.setMavenResourcesFiltering(this.mavenResourcesFiltering);
+      this.component.setBuildContext(this.buildContext);
+      this.component.setOverriddenGeneratedClassName(this.overriddenGeneratedClassName);
+      this.component.setOverriddenTemplateFile(IBVersionsUtils.pathOrNull(this.overriddenTemplateFile));
+      this.component.setProject(this.project);
+      this.component.setSession(this.session);
+      this.component.setEncoding(this.encoding);
+      this.component.setApiVersionPropertyName(this.apiVersionPropertyName);
+      this.component.execute();
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      throw new MojoExecutionException("FAiled to execute", e);
+      throw new MojoExecutionException("Failed to execute", e);
     }
   }
 
-  abstract GeneratorComponent getComponent();
-
-//  public abstract File getOutputDirectory();
-//
-//  abstract public Path getWorkDirectory();
-//
-//  abstract public void setWorkDirectory(File workDir);
-//
   protected boolean isTestGeneration() {
     return false;
   }
+
+  /**
+   * Override for other language types with other components
+   *
+   * @return
+   */
+  protected String getType() {
+    return JavaGeneratorComponent.JAVA;
+  }
+
+  /* These two have defaults set (by Maven) in the real mojos */
+
+  abstract protected File getWorkDirectory();
+
+  abstract protected File getOutputDirectory();
 
 }

@@ -7,7 +7,7 @@
   <version>1.0</version>
   <properties>
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-    <ibexceptions.version>52</ibexceptions.version>
+    <ibexceptions.version>91-SNAPSHOT</ibexceptions.version>
   </properties>
   <dependencies>
     <dependency>
@@ -50,8 +50,8 @@
         <executions>
           <execution>
             <goals>
-              <goal>generate-java-version</goal>
-              <goal>generate-java-test-version</goal>
+              <goal>generate-source-version</goal>
+              <goal>generate-test-version</goal>
             </goals>
           </execution>
         </executions>

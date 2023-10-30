@@ -15,8 +15,10 @@
  */
 package org.infrastructurebuilder.maven;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
-import java.util.Objects;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,10 +29,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
-@Mojo(name = "generate-java-test-version", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, threadSafe = true)
+@Mojo(name = GenerateTestMojo.GENERATE_JAVA_TEST_VERSION, defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, threadSafe = true)
 public class GenerateTestMojo extends AbstractGenerateMojo {
 
-  private GeneratorComponent component;
+  public static final String GENERATE_JAVA_TEST_VERSION = "generate-test-version";
 
   @Parameter(defaultValue = "${project.build.directory}/generated-test-sources/generated-test-version")
   private File testOutputDirectory;
@@ -38,18 +40,30 @@ public class GenerateTestMojo extends AbstractGenerateMojo {
   @Parameter(defaultValue = "${project.build.directory}/generate-test-version", required = true, readonly = false)
   private File workDirectory;
 
-  @Override
-  GeneratorComponent getComponent() {
-    component.setOutputDirectory(this.testOutputDirectory);
-    component.setWorkDirectory(this.workDirectory);
-    return component;
-  }
-
   @Inject
   public GenerateTestMojo(BuildContext b, @Named("default") MavenResourcesFiltering f,
-      @Named(JavaTestGeneratorComponent.JAVA_TEST) GeneratorComponent c)
+      Map<String, GeneratorComponent> components)
   {
-    super(b, f);
-    this.component = Objects.requireNonNull(c);
+    super(b, f, components);
   }
+  @Override
+  protected File getOutputDirectory() {
+    return requireNonNull(this.testOutputDirectory);
+  }
+
+  @Override
+  protected File getWorkDirectory() {
+    return requireNonNull(this.workDirectory);
+  }
+
+  @Override
+  protected String getType() {
+    return JavaTestGeneratorComponent.JAVA_TEST;
+  }
+
+  @Override
+  protected boolean isTestGeneration() {
+    return true;
+  }
+
 }

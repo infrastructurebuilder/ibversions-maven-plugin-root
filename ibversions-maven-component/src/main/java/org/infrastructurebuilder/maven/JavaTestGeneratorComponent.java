@@ -13,7 +13,7 @@ public class JavaTestGeneratorComponent extends GeneratorComponent {
 
   @Override
   protected void addSourceFolderToProject(final MavenProject mavenProject) {
-    mavenProject.addTestCompileSourceRoot(getOutputDirectory().getAbsolutePath());
+    mavenProject.addTestCompileSourceRoot(getOutputDirectory().toAbsolutePath().toString());
   }
 
   @Override

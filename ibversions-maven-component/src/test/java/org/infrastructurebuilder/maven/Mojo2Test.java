@@ -17,9 +17,7 @@ package org.infrastructurebuilder.maven;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,7 +49,7 @@ public class Mojo2Test extends AbstractBase {
     c.setOverriddenTemplateFile(null);
     c.execute();
     assertEquals(1, c.countCopiedFiles());
-    final File file = c.getOutputDirectory();
+    final Path file = c.getOutputDirectory();
     assertNotNull(file);
 //    assertTrue(file.isDirectory());
 
@@ -63,7 +61,7 @@ public class Mojo2Test extends AbstractBase {
   @Override
   protected JavaTestGeneratorComponent getComponent() {
     JavaTestGeneratorComponent jc = new JavaTestGeneratorComponent();
-    jc.setLog(getLog());
+    jc.enableLogging(getLog());
     return jc;
   }
 
