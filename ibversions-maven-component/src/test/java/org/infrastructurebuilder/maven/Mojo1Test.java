@@ -24,31 +24,23 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.junit.Test;
 
 public class Mojo1Test extends AbstractBase {
-  private MavenProject project;
-  private Path tests;
 
   @Override
-  public MavenProject getProject() throws Throwable {
-    tests = getCopyOfTestingWorkingPath(Paths.get("test1"));
-    project = ProjectStub.createProjectForITExample(tests);
-    return project;
-  }
-
-  public File getWorkDirectory() {
-    return tests.resolve("target").resolve("generate-version").toFile();
+  public Path getProject() throws Throwable {
+    return getCopyOfTestingWorkingPath(Paths.get("test1"));
+//    project = ProjectStub.createProjectForITExample(tests);
+//    return project;
   }
 
   @Test
   public void testExecute() throws Throwable {
     this.component.setOverriddenTemplateFile(null);
-    this.component.execute();
-    assertEquals(1, this.component.countCopiedFiles());
+
+    var res = this.component.execute();
+    assertEquals(1, res.get().getAddedSourcesCount());
 
 //    verify(filtering, times(1)).filterResources(any(MavenResourcesExecution.class));
 //    verify(buildContext, times(1)).refresh(outputDirectory);
@@ -56,22 +48,12 @@ public class Mojo1Test extends AbstractBase {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testExecuteSetNullSource() throws MojoExecutionException, MavenFilteringException, IOException {
+  public void testExecuteSetNullSource() throws IOException {
     this.component.setWorkDirectory(null);
-  }
-
-  @Test
-  public void testGetOutputDirectory() {
-
-    final Path file = this.component.getOutputDirectory();
-    assertNotNull(file);
-    assertTrue(file.toString().contains("generated-version-templates"));
   }
 
   @Override
   protected GeneratorComponent getComponent() {
-    JavaGeneratorComponent jc = new JavaGeneratorComponent();
-    jc.enableLogging(getLog());
-    return jc;
+    return new JavaGeneratorComponent();
   }
 }

@@ -42,8 +42,13 @@ public class GenerateJavaMojo extends AbstractGenerateMojo {
   private File workDirectory;
 
   @Override
-  protected String getType() {
-    return "java";
+  protected String getMojoHint() {
+    return GenerateJavaMojo.GENERATE_JAVA_VERSION;
+  }
+
+  @Override
+  protected String getComponentHint() {
+    return JavaGeneratorComponent.JAVA;
   }
 
   @Override
@@ -59,6 +64,11 @@ public class GenerateJavaMojo extends AbstractGenerateMojo {
   @Inject
   public GenerateJavaMojo(BuildContext b, @Named("default") MavenResourcesFiltering f, Map<String, GeneratorComponent> components) {
     super(b,f,components);
+  }
+
+  @Override
+  protected boolean isTestGeneration() {
+    return false;
   }
 
 }

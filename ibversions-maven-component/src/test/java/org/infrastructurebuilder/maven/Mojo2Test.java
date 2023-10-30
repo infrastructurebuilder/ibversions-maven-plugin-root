@@ -22,34 +22,25 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.junit.Test;
 
 public class Mojo2Test extends AbstractBase {
-
-  private MavenProject project;
-  private Path tests;
 
   public Mojo2Test() {
     super();
   }
 
   @Override
-  public MavenProject getProject() throws Throwable {
-    tests = getCopyOfTestingWorkingPath(Paths.get("test2"));
-    project = ProjectStub.createProjectForITExample(tests);
-    return project;
+  public Path getProject() throws Throwable {
+    return getCopyOfTestingWorkingPath(Paths.get("test2"));
   }
 
   @Test
-  public void testExecute() throws MojoExecutionException, MavenFilteringException, IOException {
-    GeneratorComponent c = this.component;
-    c.setOverriddenTemplateFile(null);
-    c.execute();
-    assertEquals(1, c.countCopiedFiles());
-    final Path file = c.getOutputDirectory();
+  public void testExecute() throws IOException {
+    this.component.setOverriddenTemplateFile(null);
+    var res = this.component.execute();
+    assertEquals(1, res.get().getAddedSourcesCount());
+    final Path file = this.component.getWorkDirectory();
     assertNotNull(file);
 //    assertTrue(file.isDirectory());
 
@@ -60,9 +51,7 @@ public class Mojo2Test extends AbstractBase {
 
   @Override
   protected JavaTestGeneratorComponent getComponent() {
-    JavaTestGeneratorComponent jc = new JavaTestGeneratorComponent();
-    jc.enableLogging(getLog());
-    return jc;
+    return new JavaTestGeneratorComponent();
   }
 
 }

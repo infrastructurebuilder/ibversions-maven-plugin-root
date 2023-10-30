@@ -15,51 +15,32 @@
  */
 package org.infrastructurebuilder.maven;
 
-import static org.infrastructurebuilder.maven.IBVersionsUtils.copyTree;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.DefaultMavenExecutionResult;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.filtering.DefaultMavenFileFilter;
-import org.apache.maven.shared.filtering.DefaultMavenResourcesFiltering;
-import org.apache.maven.shared.filtering.MavenFileFilter;
-import org.apache.maven.shared.filtering.MavenResourcesFiltering;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.joor.Reflect;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import org.sonatype.plexus.build.incremental.BuildContext;
-import org.sonatype.plexus.build.incremental.DefaultBuildContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBase {
-
+  public final static Logger pLogger = LoggerFactory.getLogger(AbstractBase.class);
+  public static final String GENERATE_VERSION = "generate-version";
+  public static final String GENERATE_TEST_VERSION = "generate-test-version";
+  public static final String TARGET = "target";
+  public static final String GENERATED_SOURCES = "generated-sources";
+  public static final String GENERATED_VERSION_TEMPLATES = "generated-version-templates";
   public static final String API_VERSION = "apiVersion";
+  private static final TestingPathSupplier tps = new TestingPathSupplier();
 
-  private final static TestingPathSupplier tps = new TestingPathSupplier();
-
-  protected MavenFileFilter filter = new DefaultMavenFileFilter();
-  protected MavenResourcesFiltering filtering = new DefaultMavenResourcesFiltering();
-  private MavenProject testProject;
   private Path testWorkDirectory;
   protected Path testOutputDirectory;
 
-  protected BuildContext buildContext = new DefaultBuildContext();
-
   protected GeneratorComponent component;
-
-  private ConsoleLogger pLogger;
-
-  private String encoding = "UTF-8";
 
   public AbstractBase() {
     super();
@@ -69,7 +50,7 @@ public abstract class AbstractBase {
 
     Path p = getTps().getTestClasses().resolve(name);
     Path testPath = getTps().get();
-    FileUtils.copyDirectory(p.toFile(), testPath.toFile());
+    IBUtils.copyTree(p, testPath);
     return testPath;
   }
 
@@ -82,94 +63,26 @@ public abstract class AbstractBase {
     getTps().finalize();
   }
 
-  @SuppressWarnings("deprecation")
   @Before
   public void before() throws Throwable {
-    pLogger = new ConsoleLogger();
-    Reflect.on(filter) //
-        .set("logger", pLogger) //
-        .set("buildContext", buildContext);
-    Reflect.on(filtering) //
-        .set("mavenFileFilter", filter) //
-        .set("buildContext", buildContext) //
-        .set("logger", pLogger);
-    testProject = getProject();
-    Path targetDir = Paths.get(testProject.getBuild().getDirectory());
+    Path tod = Paths.get(GENERATED_SOURCES).resolve(GENERATED_VERSION_TEMPLATES);
+    Path testProject = getProject();
+    Path targetDir = testProject.resolve(TARGET);// Paths.get(testProject.getBuild().getDirectory());
 
     this.component = getComponent();
-    testWorkDirectory = targetDir.resolve("generate-version");
-    testOutputDirectory = targetDir.resolve("generated-sources").resolve("generated-version-templates");
+    testOutputDirectory = targetDir.resolve(tod);
+    testWorkDirectory = targetDir.resolve(this.component.isTestGeneration() ? GENERATE_TEST_VERSION : GENERATE_VERSION);
 
-    final Path target = testProject.getBasedir().toPath().resolve(testOutputDirectory);
-    FileUtils.deleteQuietly(target.toFile());
+    final Path target = targetDir.resolve(tod); // testProject.getBasedir().toPath().resolve(testOutputDirectory);
+    IBUtils.deletePath(target);
 
-    this.component.setOutputDirectory(testOutputDirectory);
+    this.component.setGAV(new DefaultGAV("org.sample:sample:1.0.0"));
     this.component.setWorkDirectory(testWorkDirectory);
-    this.component.setMavenResourcesFiltering(filtering);
-    this.component.setBuildContext(buildContext);
     this.component.setOverriddenGeneratedClassName(null);
     this.component.setOverriddenTemplateFile(IBVersionsUtils.pathOrNull(null));
-    this.component.setProject(testProject);
-    this.component.setSession(new MavenSession(null, new DefaultMavenExecutionRequest(), new DefaultMavenExecutionResult(), testProject));
-    this.component.setEncoding(this.encoding);
-    this.component.setApiVersionPropertyName(API_VERSION);
-    this.component.enableLogging(pLogger);
   }
-
-  @Test
-  public void testCopy() throws IOException {
-    Path source = getTps().get();
-    Path c = Paths.get("A").resolve("B").resolve("C");
-    Path e = Paths.get("A").resolve("D").resolve("E");
-    Path one = source.resolve(c);
-    Path two = source.resolve(e);
-
-    Files.createDirectories(one);
-    Files.createDirectories(two);
-
-    Path tempX = Files.createTempFile(one, "X", ".y");
-
-    Path nameX = tempX.getFileName();
-    Path tempZ = Files.createTempFile(two, "Z", ".y");
-    Path nameZ = tempZ.getFileName();
-
-    Path dest = getTps().get();
-    Path targetX = dest.resolve(c).resolve(nameX);
-    Path targetZ = dest.resolve(e).resolve(nameZ);
-
-    copyTree(source, dest, pLogger);
-
-    assertTrue(Files.isRegularFile(targetX));
-    assertTrue(Files.isRegularFile(targetZ));
-
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testCopyDirectoryStructionWithIO() throws IOException {
-    copyTree(null, null, pLogger);
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testCopyDirectoryStructionWithIO2() throws IOException {
-    copyTree(Paths.get("X"), null, pLogger);
-  }
-
-  @Test(expected = IOException.class)
-  public void testCopyDirectoryStructionWithIO3() throws IOException {
-    copyTree(Paths.get("X"), Paths.get("X"), pLogger);
-  }
-
-  @Test(expected = IOException.class)
-  public void testCopyDirectoryStructionWithIO4() throws IOException {
-    copyTree(Paths.get("X"), Paths.get("Z"), pLogger);
-  }
-
-  public ConsoleLogger getLog() {
-    return pLogger;
-  }
-
-  abstract protected MavenProject getProject() throws Throwable;
 
   abstract protected GeneratorComponent getComponent();
 
+  abstract public Path getProject() throws Throwable;
 }

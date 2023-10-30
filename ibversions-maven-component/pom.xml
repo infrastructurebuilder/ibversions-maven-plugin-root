@@ -20,6 +20,7 @@
   </properties>
   <dependencies>
 
+    <!--
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
@@ -36,22 +37,18 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+-->
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.infrastructurebuilder.usurped</groupId>
       <artifactId>semver4j</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder.util.logging</groupId>
-      <artifactId>iblog-maven-component</artifactId>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
@@ -62,6 +59,11 @@
       <artifactId>iblogconfig</artifactId>
       <classifier>debug</classifier>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.4.11</version>
     </dependency>
     <dependency>
       <groupId>org.jooq</groupId>

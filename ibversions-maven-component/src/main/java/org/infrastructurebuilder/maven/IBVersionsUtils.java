@@ -9,13 +9,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.codehaus.plexus.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface IBVersionsUtils {
-  public static int copyTree(final Path sPath, final Path dPath, Logger log)
-      throws IOException {
+  public final static Logger log = LoggerFactory.getLogger(IBVersionsUtils.class);
+
+  public static List<Path> copyTree(final Path sPath, final Path dPath) throws IOException {
+    List<Path> list = new ArrayList<>();
     requireNonNull(sPath, "Source dir cannot be null");
     requireNonNull(dPath, "Destination dir cannot be null");
 
@@ -41,7 +46,6 @@ public interface IBVersionsUtils {
         return FileVisitResult.CONTINUE;
       }
 
-
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         super.visitFile(file, attrs);
@@ -56,12 +60,13 @@ public interface IBVersionsUtils {
         if (!Files.isDirectory(target.getParent()))
           Files.createDirectories(target.getParent());
         Files.copy(sFile, target);
+        list.add(target);
         copied.incrementAndGet();
         return FileVisitResult.CONTINUE;
       }
 
     });
-    return copied.get();
+    return list;
   }
 
   public static Path pathOrNull(File file) {

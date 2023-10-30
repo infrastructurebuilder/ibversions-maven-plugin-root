@@ -46,6 +46,7 @@ public class GenerateTestMojo extends AbstractGenerateMojo {
   {
     super(b, f, components);
   }
+
   @Override
   protected File getOutputDirectory() {
     return requireNonNull(this.testOutputDirectory);
@@ -57,7 +58,12 @@ public class GenerateTestMojo extends AbstractGenerateMojo {
   }
 
   @Override
-  protected String getType() {
+  protected String getMojoHint() {
+    return GenerateTestMojo.GENERATE_JAVA_TEST_VERSION;
+  }
+
+  @Override
+  protected String getComponentHint() {
     return JavaTestGeneratorComponent.JAVA_TEST;
   }
 
