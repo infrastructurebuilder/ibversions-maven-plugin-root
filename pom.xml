@@ -77,12 +77,12 @@ permissions
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <team.name>infrastructurebuilder</team.name>
-    <maven.version>3.8.3</maven.version>
-    <maven.import.bom.version>3.8.3.0</maven.import.bom.version>
+    <maven.version>3.9.5</maven.version>
+    <maven.import.bom.version>3.9.5.0</maven.import.bom.version>
     <compilerVersion>11</compilerVersion>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
-    <test.plugin.version>3.1.2</test.plugin.version>
-    <jacoco.version>0.8.10</jacoco.version>
+    <test.plugin.version>3.2.1</test.plugin.version>
+    <jacoco.version>0.8.11</jacoco.version>
     <jacoco.max.missed.classes>1</jacoco.max.missed.classes>
 
     <jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>
@@ -190,7 +190,7 @@ permissions
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.3.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -221,7 +221,7 @@ permissions
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.9.0</version>
+          <version>3.10.1</version>
           <configuration>
             <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
           </configuration>
