@@ -13,84 +13,22 @@ permissions
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.infrastructurebuilder.maven</groupId>
+    <artifactId>ibversions-maven-plugin-root</artifactId>
+    <version>0.16.0-SNAPSHOT</version>
+  </parent>
 
-  <groupId>org.infrastructurebuilder.maven</groupId>
-  <artifactId>ibversions-maven-plugin-root</artifactId>
-  <version>0.16.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+  <artifactId>ibversions-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
   <name>${project.artifactId}</name>
   <description>Produce a source artifact that describes the executing artifact</description>
   <inceptionYear>2019</inceptionYear>
 
   <url>https://github.com/infrastructurebuilder/${project.artifactId}</url>
-  <licenses>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-      <comments>A business-friendly OSS license</comments>
-    </license>
-  </licenses>
-
-  <developers>
-    <developer>
-      <id>mykelalvis</id>
-      <email>mykel dot alvis at gmail dot com</email>
-      <name>Mykel Alvis</name>
-      <organization>infrastructurebuilder</organization>
-      <organizationUrl>https://github.com/infrastructurebuilder</organizationUrl>
-      <timezone>America/Chicago</timezone>
-      <roles>
-        <role>developer</role>
-      </roles>
-    </developer>
-  </developers>
-  <prerequisites>
-    <maven>3.8.3</maven>
-  </prerequisites>
-
-  <contributors>
-  </contributors>
-
-  <scm>
-    <connection>
-      scm:git:https://github.com/${team.name}/${project.artifactId}.git</connection>
-    <url>https://github.com/${team.name}/${project.artifactId}</url>
-    <developerConnection>
-      scm:git:git@github.com:${team.name}/${project.artifactId}.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <team.name>infrastructurebuilder</team.name>
-    <maven.version>3.8.3</maven.version>
-    <maven.import.bom.version>3.8.3.0</maven.import.bom.version>
-    <compilerVersion>11</compilerVersion>
     <test.coverage.percentage.required>77</test.coverage.percentage.required>
-    <test.plugin.version>3.1.2</test.plugin.version>
-    <jacoco.version>0.8.10</jacoco.version>
     <jacoco.max.missed.classes>1</jacoco.max.missed.classes>
-
-    <jacoco.it.execution.data.file>${project.build.directory}/jacoco-it.exec</jacoco.it.execution.data.file>
-    <jacoco.it.execution.dest.file>${jacoco.it.execution.data.file}</jacoco.it.execution.dest.file>
-    <jacoco.ut.execution.data.file>${project.build.directory}/jacoco-ut.data</jacoco.ut.execution.data.file>
-    <jacoco.ut.execution.dest.file>${jacoco.ut.execution.data.file}</jacoco.ut.execution.dest.file>
-    <jacoco.skip>false</jacoco.skip>
-    <semver4j.version>3.2.0.3</semver4j.version>
-    <ibexceptions.version>91</ibexceptions.version>
-    <iblog.version>0.14.4</iblog.version>
-
   </properties>
 
   <dependencyManagement>
@@ -102,44 +40,86 @@ permissions
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>ibversions-maven-component</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-filtering</artifactId>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.shared</groupId>
-      <artifactId>maven-filtering</artifactId>
-      <version>3.2.0</version>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
     </dependency>
-        <dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interpolation</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <scope>provided</scope>
-      <version>3.8.2</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-filtering</artifactId>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.2</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>5.5.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder.usurped</groupId>
-      <artifactId>semver4j</artifactId>
-      <version>${semver4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.infrastructurebuilder.util.logging</groupId>
-      <artifactId>iblog-maven-component</artifactId>
-      <version>${iblog.version}</version>
     </dependency>
 
     <dependency>
@@ -159,9 +139,7 @@ permissions
       <artifactId>joor</artifactId>
       <version>0.9.15</version>
     </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <dependencies>
+    -->
   </dependencies>
 
   <build>
@@ -267,6 +245,89 @@ permissions
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.13</version>
+          <configuration>
+            <serverId>ossrh</serverId>
+            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>3.0.1</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <useReleaseProfile>false</useReleaseProfile>
+            <releaseProfiles>release</releaseProfiles>
+            <goals>deploy</goals>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.8.2</version>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>2.1.1</version>
+        <executions>
+          <execution>
+            <id>process-classes</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>generate-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <source>${compilerVersion}</source>
+          <nohelp>true</nohelp>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>pre-unit-test</id>
@@ -342,71 +403,6 @@ permissions
           <dataFile>${jacoco.ut.execution.data.file}</dataFile>
           <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
         </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>1.6.13</version>
-          <configuration>
-            <serverId>ossrh</serverId>
-            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>3.0.1</version>
-          <configuration>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-            <useReleaseProfile>false</useReleaseProfile>
-            <releaseProfiles>release</releaseProfiles>
-            <goals>deploy</goals>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>3.1.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>3.1.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.3.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.1</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.8.2</version>
-        </plugin>
-
-      </plugins>
-    </pluginManagement>
-    <plugins>
-
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <source>${compilerVersion}</source>
-          <nohelp>true</nohelp>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -439,6 +435,7 @@ permissions
           <plugin>
             <artifactId>maven-invoker-plugin</artifactId>
             <configuration>
+              <skipInvocation>false</skipInvocation>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
               <cloneClean>true</cloneClean>
               <postBuildHookScript>verify</postBuildHookScript>
@@ -455,6 +452,7 @@ permissions
               </execution>
             </executions>
           </plugin>
+
         </plugins>
       </build>
     </profile>
@@ -507,8 +505,4 @@ permissions
     </profile>
   </profiles>
 
-  <modules>
-    <module>ibversions-maven-component</module>
-    <module>ibversions-maven-plugin</module>
-  </modules>
 </project>
