@@ -4,8 +4,8 @@
     <pluginExecution>
       <pluginExecutionFilter>
         <goals>
-          <goal>generate-java-version</goal>
-          <goal>generate-java-test-version</goal>
+          <goal>generate-source-version</goal>
+          <goal>generate-test-version</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
