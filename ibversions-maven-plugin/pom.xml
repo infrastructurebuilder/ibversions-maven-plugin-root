@@ -125,7 +125,7 @@ permissions
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
-      <version>0.20.1-SNAPSHOT</version>
+      <version>0.21.0</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>

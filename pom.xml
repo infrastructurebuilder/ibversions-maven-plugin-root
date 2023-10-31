@@ -88,8 +88,8 @@ permissions
     <jacoco.ut.execution.dest.file>${jacoco.ut.execution.data.file}</jacoco.ut.execution.dest.file>
     <jacoco.skip>false</jacoco.skip>
     <semver4j.version>3.2.0.3</semver4j.version>
-    <ibexceptions.version>91-SNAPSHOT</ibexceptions.version>
-    <iblog.version>0.14.4-SNAPSHOT</iblog.version>
+    <ibexceptions.version>91</ibexceptions.version>
+    <iblog.version>0.14.4</iblog.version>
 
   </properties>
 
@@ -145,7 +145,7 @@ permissions
     <dependency>
       <groupId>org.infrastructurebuilder</groupId>
       <artifactId>ibcore</artifactId>
-      <version>0.20.1-SNAPSHOT</version>
+      <version>0.21.0</version>
     </dependency>
     <dependency>
       <groupId>org.infrastructurebuilder.util.logging</groupId>
