@@ -15,7 +15,7 @@ permissions
   <parent>
     <groupId>org.infrastructurebuilder.maven</groupId>
     <artifactId>ibversions-maven-plugin-root</artifactId>
-    <version>0.16.1-SNAPSHOT</version>
+    <version>0.16.1</version>
   </parent>
 
   <artifactId>ibversions-maven-plugin</artifactId>
