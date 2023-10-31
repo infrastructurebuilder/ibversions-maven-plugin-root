@@ -93,6 +93,7 @@ permissions
     <semver4j.version>3.2.0.3</semver4j.version>
     <ibexceptions.version>91</ibexceptions.version>
     <iblog.version>0.14.4</iblog.version>
+    <gpg.signing.profiles>release,IBgpgsigning</gpg.signing.profiles>
 
   </properties>
 
@@ -363,7 +364,7 @@ permissions
           <configuration>
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <useReleaseProfile>false</useReleaseProfile>
-            <releaseProfiles>release</releaseProfiles>
+            <releaseProfiles>${gpg.signing.profiles}</releaseProfiles>
             <goals>deploy</goals>
           </configuration>
         </plugin>
