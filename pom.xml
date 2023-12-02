@@ -48,9 +48,6 @@ permissions
 	<contributors>
 	</contributors>
 
-	<prerequisites>
-		<maven>3.8.3</maven>
-	</prerequisites>
 
 	<modules>
 		<module>ibversions-maven-component</module>
@@ -80,10 +77,10 @@ permissions
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<team.name>infrastructurebuilder</team.name>
 		<maven.version>3.9.5</maven.version>
-		<maven.import.bom.version>3.9.5.0</maven.import.bom.version>
+		<maven.import.bom.version>3.9.5.2</maven.import.bom.version>
 		<compilerVersion>11</compilerVersion>
 		<test.coverage.percentage.required>77</test.coverage.percentage.required>
-		<test.plugin.version>3.2.1</test.plugin.version>
+		<test.plugin.version>3.2.2</test.plugin.version>
 		<jacoco.version>0.8.11</jacoco.version>
 		<jacoco.max.missed.classes>1</jacoco.max.missed.classes>
 
@@ -97,6 +94,8 @@ permissions
 		<iblog.version>0.14.4</iblog.version>
 		<gpg.signing.profiles>release,IBgpgsigning</gpg.signing.profiles>
 		<junit.jupiter.version>5.10.1</junit.jupiter.version>
+		<slf4j.version>2.0.9</slf4j.version>
+		<logback.classic.version>1.4.14</logback.classic.version>
 
 
 	</properties>
@@ -104,26 +103,34 @@ permissions
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.classic.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
 				<artifactId>maven-import-bom</artifactId>
 				<version>${maven.import.bom.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!--
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-artifact</artifactId>
 				<scope>provided</scope>
 			</dependency>
+			-->
 			<dependency>
 				<groupId>org.apache.maven.shared</groupId>
 				<artifactId>maven-filtering</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven.plugin-tools</groupId>
 				<artifactId>maven-plugin-annotations</artifactId>
-				<version>3.8.2</version>
+				<version>3.10.2</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -158,7 +165,7 @@ permissions
 			<dependency>
 				<groupId>org.infrastructurebuilder</groupId>
 				<artifactId>ibcore</artifactId>
-				<version>0.21.0</version>
+				<version>0.21.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.infrastructurebuilder.util.logging</groupId>
@@ -194,6 +201,27 @@ permissions
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>3.4.1</version>
+					<executions>
+						<execution>
+							<id>enforce-maven</id>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<requireMavenVersion>
+										<version>3.9.5</version>
+									</requireMavenVersion>
+								</rules>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-gpg-plugin</artifactId>
 					<version>3.1.0</version>
 				</plugin>
@@ -205,7 +233,7 @@ permissions
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.6.0</version>
+					<version>3.6.2</version>
 					<configuration>
 						<additionalparam>-Xdoclint:none</additionalparam>
 					</configuration>
@@ -231,7 +259,7 @@ permissions
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-plugin-plugin</artifactId>
-					<version>3.10.1</version>
+					<version>3.10.2</version>
 					<configuration>
 						<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 					</configuration>
@@ -400,13 +428,16 @@ permissions
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.8.2</version>
+					<version>4.0.0-M12</version>
 				</plugin>
 
 			</plugins>
 		</pluginManagement>
 		<plugins>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
