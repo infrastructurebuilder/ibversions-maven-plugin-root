@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
@@ -71,6 +72,9 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   @Parameter(property = "apiVersionPropertyName", required = false)
   private String apiVersionPropertyName;
 
+  @Parameter(property = "apiVersionPropertyNameSafe", required = false)
+  private String apiVersionPropertyNameSafe;
+
   private final BuildContext buildContext;
 
   protected final MavenResourcesFiltering mavenResourcesFiltering;
@@ -78,6 +82,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   private final GeneratorComponent component;
 
   private Optional<IBVersionsComponentExecutionResult> result;
+
 
   public AbstractGenerateMojo(BuildContext b, MavenResourcesFiltering f, Map<String, GeneratorComponent> components) {
     this.buildContext = requireNonNull(b);
@@ -90,12 +95,28 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   }
 
   protected abstract String getComponentHint();
+  
+  public void setApiVersionPropertyName(String apiVersionPropertyName) {
+    getLog().info("Setting property name to " + apiVersionPropertyName);
+    this.apiVersionPropertyName = apiVersionPropertyName;
+  }
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    if (this.apiVersionPropertyName != null && !StringUtils.isBlank(this.apiVersionPropertyName)) {
+    if (!StringUtils.isBlank(this.apiVersionPropertyName)) {
       Semver s = new Semver(project.getVersion());
-      project.getProperties().setProperty(apiVersionPropertyName, s.getMajor() + "." + s.getMinor());
+      Properties p = project.getProperties();
+      p.setProperty(apiVersionPropertyName, s.getMajor() + "." + s.getMinor());
+      getLog().debug(String.format("Property %s set to %s", this.apiVersionPropertyName,
+          p.getProperty(this.apiVersionPropertyName)));
+    }
+    if (!StringUtils.isBlank(this.apiVersionPropertyNameSafe)) {
+      Semver s = new Semver(project.getVersion());
+      Properties p = project.getProperties();
+      p.setProperty(apiVersionPropertyNameSafe, s.getMajor() + "_" + s.getMinor());
+      getLog().debug(String.format("Property %s set to %s", this.apiVersionPropertyNameSafe,
+          p.getProperty(this.apiVersionPropertyNameSafe)));
+      
     }
     if ("pom".equals(project.getPackaging())) {
       getLog().info("Skipping a POM project type.");

@@ -15,16 +15,13 @@
  */
 package org.infrastructurebuilder.maven;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Mojo1Test extends AbstractBase {
 
@@ -47,9 +44,9 @@ public class Mojo1Test extends AbstractBase {
 //    verify(getProject(), times(1)).addCompileSourceRoot(outputDirectory.getAbsolutePath());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testExecuteSetNullSource() throws IOException {
-    this.component.setWorkDirectory(null);
+    assertThrows(NullPointerException.class, () -> this.component.setWorkDirectory(null));
   }
 
   @Override

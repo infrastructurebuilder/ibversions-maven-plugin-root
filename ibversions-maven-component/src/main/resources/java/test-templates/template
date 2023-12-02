@@ -1,23 +1,23 @@
 package @project.groupId@;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class Test@classFromProjectArtifactId@
 {
-  @org.junit.Test
+  @org.junit.jupiter.api.Test
   public void testVersion()
   {
     org.json.JSONObject version = new org.json.JSONObject(@classFromProjectArtifactId@.getJSONCoordinates());
-    assertEquals("Group id = @project.groupId@","@project.groupId@", version.getString("groupId"));
-    assertNotNull("Existence", new @classFromProjectArtifactId@());
-    assertNotNull("XML Existence", @classFromProjectArtifactId@.getXMLCoordinates());
-    assertEquals("Artifact id = @project.artifactId@", "@project.artifactId@", version.getString("artifactId"));
-    assertEquals("Version = @project.version@", "@project.version@", version.getString("version"));
-    assertEquals("Extension = @project.packaging@", "@project.packaging@", version.getString("extension"));
-    assertTrue("Version starts with API version (not a great test)",  "@project.version@".startsWith(version.getString("apiVersion")));
-    assertTrue("String contains artifactId",  new @classFromProjectArtifactId@().getArtifactDependency().get().contains("@project.artifactId@"));
-    assertTrue("Api contains api", "@project.version@".startsWith(new @classFromProjectArtifactId@().getAPIVersion().get()));
-    assertNotNull("Extension is not null",  new @classFromProjectArtifactId@().getExtension().get());
+    assertEquals("@project.groupId@", version.getString("groupId"),"Group id = @project.groupId@");
+    assertNotNull(new @classFromProjectArtifactId@(),"Existence");
+    assertNotNull( @classFromProjectArtifactId@.getXMLCoordinates(), "XML Existence");
+    assertEquals( "@project.artifactId@", version.getString("artifactId"), "Artifact id = @project.artifactId@");
+    assertEquals( "@project.version@", version.getString("version"),"Version = @project.version@");
+    assertEquals("@project.packaging@", version.getString("extension"), "Extension = @project.packaging@");
+    assertTrue(  "@project.version@".startsWith(version.getString("apiVersion")),"Version starts with API version (not a great test)");
+    assertTrue(  new @classFromProjectArtifactId@().getArtifactDependency().get().contains("@project.artifactId@"),"String contains artifactId");
+    assertTrue( "@project.version@".startsWith(new @classFromProjectArtifactId@().getAPIVersion().get()),"Api contains api");
+    assertNotNull(  new @classFromProjectArtifactId@().getExtension().get(),"Extension is not null");
 
   }
 }

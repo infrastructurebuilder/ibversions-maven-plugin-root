@@ -22,8 +22,8 @@ import java.nio.file.Paths;
 import org.infrastructurebuilder.util.core.DefaultGAV;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,12 +58,12 @@ public abstract class AbstractBase {
     return tps;
   }
 
-  @After
+  @AfterEach
   public void after() {
     getTps().finalize();
   }
 
-  @Before
+  @BeforeEach
   public void before() throws Throwable {
     Path tod = Paths.get(GENERATED_SOURCES).resolve(GENERATED_VERSION_TEMPLATES);
     Path testProject = getProject();
