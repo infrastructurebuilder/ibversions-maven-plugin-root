@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import org.infrastructurebuilder.util.core.DefaultGAV;
 import org.infrastructurebuilder.util.core.IBUtils;
 import org.infrastructurebuilder.util.core.TestingPathSupplier;
+import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public abstract class AbstractBase {
     final Path target = targetDir.resolve(tod); // testProject.getBasedir().toPath().resolve(testOutputDirectory);
     IBUtils.deletePath(target);
 
-    this.component.setGAV(new DefaultGAV("org.sample:sample:1.0.0"));
+    this.component.setGAV(new DefaultGAVBasic("org.sample:sample:1.0.0"));
     this.component.setWorkDirectory(testWorkDirectory);
     this.component.setOverriddenGeneratedClassName(null);
     this.component.setOverriddenTemplateFile(IBVersionsUtils.pathOrNull(null));

@@ -12,13 +12,22 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.infrastructurebuilder.util.core.GAV;
-import org.infrastructurebuilder.util.core.IBUtils;
+import org.codehaus.plexus.util.FileUtils;
+import org.infrastructurebuilder.util.versions.GAVBasic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract public class GeneratorComponent {
 
+  // Copied from IBUtils
+  static final int BUFFER_SIZE = 10240;
+  public static void copy(final InputStream source, final OutputStream sink) throws IOException {
+    final byte[] buffer = new byte[BUFFER_SIZE];
+    for (int n = 0; (n = requireNonNull(source, "source").read(buffer)) > 0;) {
+      requireNonNull(sink, "sink").write(buffer, 0, n);
+    }
+    return;
+  }
   private final static Logger logger = LoggerFactory.getLogger(GeneratorComponent.class);
 //  private static final String CLASS_FROM_PROJECT_ARTIFACT_ID = "classFromProjectArtifactId";
   private static final String SNAPSHOT = "-snapshot";
@@ -38,7 +47,7 @@ abstract public class GeneratorComponent {
    * You can, but shouldn't, override the template file
    */
   private Path overriddenTemplateFile;
-  private GAV gav;
+  private GAVBasic gav;
 
   public Optional<IBVersionsComponentExecutionResult> execute() throws IOException {
     Objects.requireNonNull(this.gav);
@@ -71,12 +80,12 @@ abstract public class GeneratorComponent {
       }
       if (overriddenTemplateFile != null) {
         logDebug("Copying overriden template file " + overriddenTemplateFile + " to " + templatePath);
-        IBUtils.copy(overriddenTemplateFile, templatePath);
+        FileUtils.copyFile(overriddenTemplateFile.toFile(), templatePath.toFile());
       } else {
         final String rPath = getTemplatesDir() + "template";
         getLogger().info("Target path for copied resource is " + templatePath);
         try (InputStream res = getClass().getResourceAsStream(rPath); OutputStream os = newOutputStream(templatePath)) {
-          IBUtils.copy(res, os);
+          copy(res, os);
         }
       }
     } catch (final IOException e) {
@@ -154,7 +163,7 @@ abstract public class GeneratorComponent {
     return "/" + getType() + "/" + (isTestGeneration() ? "test-" : "") + "templates/";
   }
 
-  public void setGAV(GAV gav) {
+  public void setGAV(GAVBasic gav) {
     this.gav = requireNonNull(gav);
   }
 

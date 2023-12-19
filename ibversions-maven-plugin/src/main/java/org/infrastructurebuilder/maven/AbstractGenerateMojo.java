@@ -39,7 +39,7 @@ import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.filtering.MavenResourcesExecution;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.codehaus.plexus.util.StringUtils;
-import org.infrastructurebuilder.util.core.DefaultGAV;
+import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 import com.vdurmont.semver4j.Semver;
@@ -126,7 +126,7 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     buildContext.removeMessages(getWorkDirectory());
 
     try {
-      this.component.setGAV(new DefaultGAV(project.getGroupId(), project.getArtifactId(), project.getVersion()));
+      this.component.setGAV(new DefaultGAVBasic(project.getGroupId(), project.getArtifactId(), project.getVersion()));
 
       this.component.setWorkDirectory(getWorkDirectory().toPath());
       this.component.setOverriddenGeneratedClassName(this.overriddenGeneratedClassName);

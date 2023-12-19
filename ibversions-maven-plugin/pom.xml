@@ -15,7 +15,7 @@ permissions
   <parent>
     <groupId>org.infrastructurebuilder.maven</groupId>
     <artifactId>ibversions-maven-plugin-root</artifactId>
-    <version>0.18.1-SNAPSHOT</version>
+    <version>0.20.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>ibversions-maven-plugin</artifactId>
@@ -95,6 +95,11 @@ permissions
       <artifactId>maven-shared-utils</artifactId>
       <scope>compile</scope>
     </dependency>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibexceptions</artifactId>
+			<version>${ibexceptions.version}</version>
+		</dependency>
   </dependencies>
 
   <build>

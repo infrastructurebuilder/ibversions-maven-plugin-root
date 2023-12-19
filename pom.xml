@@ -9,12 +9,14 @@ distributed
   express or implied. See the License for the specific language governing
 permissions
   and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.infrastructurebuilder.maven</groupId>
 	<artifactId>ibversions-maven-plugin-root</artifactId>
-	<version>0.18.1-SNAPSHOT</version>
+	<version>0.20.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
@@ -74,9 +76,9 @@ permissions
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<team.name>infrastructurebuilder</team.name>
-		<maven.version>3.9.5</maven.version>
-		<maven.import.bom.version>3.9.5.2</maven.import.bom.version>
-		<compilerVersion>11</compilerVersion>
+		<maven.version>3.9.6</maven.version>
+		<maven.import.bom.version>3.9.6.0</maven.import.bom.version>
+		<compilerVersion>17</compilerVersion>
 		<test.coverage.percentage.required>77</test.coverage.percentage.required>
 		<test.plugin.version>3.2.2</test.plugin.version>
 		<jacoco.version>0.8.11</jacoco.version>
@@ -88,7 +90,7 @@ permissions
 		<jacoco.ut.execution.dest.file>${jacoco.ut.execution.data.file}</jacoco.ut.execution.dest.file>
 		<jacoco.skip>false</jacoco.skip>
 		<semver4j.version>3.2.0.3</semver4j.version>
-		<ibexceptions.version>95</ibexceptions.version>
+		<ibexceptions.version>98</ibexceptions.version>
 		<iblog.version>0.14.4</iblog.version>
 		<gpg.signing.profiles>release,IBgpgsigning</gpg.signing.profiles>
 		<junit.jupiter.version>5.10.1</junit.jupiter.version>
@@ -180,6 +182,12 @@ permissions
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
+		<dependency>
+			<groupId>org.infrastructurebuilder</groupId>
+			<artifactId>ibexceptions</artifactId>
+			<version>${ibexceptions.version}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -210,7 +218,7 @@ permissions
 							<configuration>
 								<rules>
 									<requireMavenVersion>
-										<version>3.9.5</version>
+										<version>3.9.6</version>
 									</requireMavenVersion>
 								</rules>
 							</configuration>

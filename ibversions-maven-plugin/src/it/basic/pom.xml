@@ -7,7 +7,7 @@
 	<version>1.0</version>
 	<properties>
 		<maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-		<ibexceptions.version>91</ibexceptions.version>
+		<ibexceptions.version>98</ibexceptions.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -40,7 +40,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.compiler.plugin.version}</version>
 				<configuration>
-					<release>11</release>
+					<release>17</release>
 				</configuration>
 			</plugin>
 			<plugin>
