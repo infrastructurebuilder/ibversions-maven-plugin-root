@@ -17,16 +17,22 @@ package org.infrastructurebuilder.maven;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
+import static org.infrastructurebuilder.maven.IBVersionsUtils.pathOrNull;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
@@ -35,6 +41,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.filtering.MavenFileFilter;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.filtering.MavenResourcesExecution;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
@@ -43,8 +50,11 @@ import org.infrastructurebuilder.util.versions.DefaultGAVBasic;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 import com.vdurmont.semver4j.Semver;
+import com.vdurmont.semver4j.Semver.SemverType;
 
 public abstract class AbstractGenerateMojo extends AbstractMojo {
+
+  public static final String PACKAGE_NAME_PROPERTY = "__targetVersionsPackageName";
 
   private static final String CLASS_FROM_PROJECT_ARTIFACT_ID = "classFromProjectArtifactId";
 
@@ -66,7 +76,10 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   @Parameter(required = false, readonly = false)
   protected File overriddenTemplateFile = null;
 
-  @Parameter(required = false, readonly = true)
+  @Parameter(defaultValue = "${project.groupId}", required = false, readonly = false)
+  private String targetPackageName;
+
+  @Parameter(required = false, readonly = false)
   private String hint;
 
   @Parameter(property = "apiVersionPropertyName", required = false)
@@ -83,60 +96,68 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
 
   private Optional<IBVersionsComponentExecutionResult> result;
 
-
-  public AbstractGenerateMojo(BuildContext b, MavenResourcesFiltering f, Map<String, GeneratorComponent> components) {
+  public AbstractGenerateMojo(BuildContext b, //
+      MavenResourcesFiltering f, // 
+//      MavenFileFilter ff, //
+      Map<String, GeneratorComponent> components)
+  {
     this.buildContext = requireNonNull(b);
     this.mavenResourcesFiltering = requireNonNull(f);
     // IF there is a hint, use that to lookup component. Otherwise type
-    getLog().debug("Looking for hint = " + this.hint + " or type = " + getComponentHint());
-
-    this.component = requireNonNull(components.get(this.hint == null ? getComponentHint() : this.hint),
-        "No viable components");
+    var theHint = this.hint == null ? getComponentHint() : this.hint;
+    logDebug("Looking for hint = %s", theHint);
+    this.component = requireNonNull(components.get(theHint), "No viable components");
+    logDebug("Got component %s", this.component.getHint());
   }
 
   protected abstract String getComponentHint();
-  
+
   public void setApiVersionPropertyName(String apiVersionPropertyName) {
-    getLog().info("Setting property name to " + apiVersionPropertyName);
+    logInfo("Setting property name to %s", apiVersionPropertyName);
     this.apiVersionPropertyName = apiVersionPropertyName;
   }
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    String tpn = this.targetPackageName;
+    Semver s = new Semver(project.getVersion() + ".0", SemverType.LOOSE);
+    String apiVersion = s.getMajor() + "." + s.getMinor();
+    String safeVersion = s.getMajor() + "_" + s.getMinor();
+    Properties p = project.getProperties();
+    if (p.containsKey(PACKAGE_NAME_PROPERTY))
+      throw new MojoFailureException("Cannot generate versions due to conflicting target package name property");
     if (!StringUtils.isBlank(this.apiVersionPropertyName)) {
-      Semver s = new Semver(project.getVersion());
-      Properties p = project.getProperties();
-      p.setProperty(apiVersionPropertyName, s.getMajor() + "." + s.getMinor());
-      getLog().debug(String.format("Property %s set to %s", this.apiVersionPropertyName,
-          p.getProperty(this.apiVersionPropertyName)));
+
+      p.setProperty(apiVersionPropertyName, apiVersion);
+      logDebug("Property %s set to %s", this.apiVersionPropertyName, apiVersion);
+      tpn = filter(tpn, this.apiVersionPropertyName, apiVersion);
     }
     if (!StringUtils.isBlank(this.apiVersionPropertyNameSafe)) {
-      Semver s = new Semver(project.getVersion());
-      Properties p = project.getProperties();
-      p.setProperty(apiVersionPropertyNameSafe, s.getMajor() + "_" + s.getMinor());
-      getLog().debug(String.format("Property %s set to %s", this.apiVersionPropertyNameSafe,
-          p.getProperty(this.apiVersionPropertyNameSafe)));
-      
-    }
-    if ("pom".equals(project.getPackaging())) {
-      getLog().info("Skipping a POM project type.");
-      return;
+      p.setProperty(apiVersionPropertyNameSafe, safeVersion);
+      logDebug("Property %s set to %s", this.apiVersionPropertyNameSafe, safeVersion);
+      tpn = filter(tpn, this.apiVersionPropertyNameSafe, safeVersion);
     }
 
+    if ("pom".equals(project.getPackaging())) {
+      logInfo("Skipping a POM project type.");
+      return;
+    }
     buildContext.removeMessages(getWorkDirectory());
 
     try {
       this.component.setGAV(new DefaultGAVBasic(project.getGroupId(), project.getArtifactId(), project.getVersion()));
-
+      this.component.setOverriddenPackageName(tpn);
       this.component.setWorkDirectory(getWorkDirectory().toPath());
       this.component.setOverriddenGeneratedClassName(this.overriddenGeneratedClassName);
-      this.component.setOverriddenTemplateFile(IBVersionsUtils.pathOrNull(this.overriddenTemplateFile));
+      this.component.setOverriddenTemplateFile(pathOrNull(this.overriddenTemplateFile));
       this.result = this.component.execute();
       if (this.result.isEmpty()) {
-        getLog().info("ibversions component returned no result");
+        logInfo("ibversions component returned no result");
         return;
       }
       var r = this.result.get();
+      logDebug("Target package name is ", r.getTargetPackageName());
+      p.setProperty(PACKAGE_NAME_PROPERTY, r.getTargetPackageName());
       // Time to filter
       if (r.getAddedSourcesCount() > 0) {
         filterSourceToFilteredOutputDir(r, null, getOutputDirectory().toPath());
@@ -153,7 +174,18 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
       }
     } catch (IOException e) {
       throw new MojoExecutionException("Failed to execute", e);
+    } finally {
+      p.remove(PACKAGE_NAME_PROPERTY);
     }
+  }
+
+  // Arbitrary delimiters
+  private String filter(String existing, String name, String sub) {
+    String one = "@" + name + "@";
+    String two = "${" + name + "}";
+    existing = existing.replace(one, sub);
+    existing = existing.replace(two,sub);
+    return existing;
   }
 
   private void filterSourceToFilteredOutputDir(IBVersionsComponentExecutionResult result, Path workingDirectory,
@@ -166,12 +198,18 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
     }
     final Resource resource = new Resource();
     resource.setFiltering(true);
-    getLog().debug(String.format("Source absolute path: %s", source.toAbsolutePath()));
+    logDebug("Source absolute path: %s", source.toAbsolutePath());
     resource.setDirectory(source.toAbsolutePath().toString());
 
     project.getProperties().setProperty(CLASS_FROM_PROJECT_ARTIFACT_ID, result.getClassFromArtifactId());
-    final MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution(List.of(resource),
-        filteredOutputDirectory.toFile(), project, encoding, emptyList(), emptyList(), session);
+    var resources = List.of(resource);
+    final MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution( //
+        resources, // Resources list
+        filteredOutputDirectory.toFile(), // target
+        project, encoding, //
+        emptyList(), // filefilters
+        emptyList(), // Non filtered extensions
+        session);
     mavenResourcesExecution.setInjectProjectBuildFilters(true);
     mavenResourcesExecution.setEscapeString(escapeString);
     mavenResourcesExecution.setOverwrite(true);
@@ -191,6 +229,12 @@ public abstract class AbstractGenerateMojo extends AbstractMojo {
   private void logInfo(final String format, final Object... args) {
     if (getLog().isInfoEnabled()) {
       getLog().info(String.format(format, args));
+    }
+  }
+
+  private void logDebug(final String format, final Object... args) {
+    if (getLog().isDebugEnabled()) {
+      getLog().debug(String.format(format, args));
     }
   }
 

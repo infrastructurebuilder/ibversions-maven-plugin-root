@@ -2,6 +2,7 @@ package org.infrastructurebuilder.maven;
 
 import static java.nio.file.Files.newOutputStream;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +49,7 @@ abstract public class GeneratorComponent {
    */
   private Path overriddenTemplateFile;
   private GAVBasic gav;
+  private String overriddenPackageName;
 
   public Optional<IBVersionsComponentExecutionResult> execute() throws IOException {
     Objects.requireNonNull(this.gav);
@@ -56,6 +58,7 @@ abstract public class GeneratorComponent {
     final Path p = getResourcePath();
     result.addSourceToCompile(p);
     result.setSource(getWorkDirectory(), isTestGeneration());
+    result.setTargetPackageName(getPackageName());
     logInfo("Source directory: %s added.", getWorkDirectory());
     return Optional.ofNullable(result);
   }
@@ -67,7 +70,7 @@ abstract public class GeneratorComponent {
   protected Path getResourcePath() throws IOException {
     Path wp = this.workDirectory.toAbsolutePath();
     final Path filePath = Paths //
-        .get(wp.toString(), requireNonNull(gav.getGroupId()).split("\\.")) // source directory/the/group/id/expanded
+        .get(wp.toString(), requireNonNull(getPackageName()).split("\\.")) // source directory/the/group/id/expanded
         .resolve((isTestGeneration() ? "Test" : "") + getClassNameFromArtifactId() + "." + getType()); // final filename
     final Path templatePath = filePath;
     logInfo("writing template to " + templatePath.toAbsolutePath());
@@ -92,6 +95,10 @@ abstract public class GeneratorComponent {
       throw new IOException("Failed to copy files", e);
     }
     return templatePath;
+  }
+
+  private String getPackageName() {
+    return requireNonNullElse(this.overriddenPackageName, gav.getGroupId());
   }
 
   protected String getClassNameFromArtifactId() {
@@ -150,6 +157,10 @@ abstract public class GeneratorComponent {
 
   }
 
+  public void setOverriddenPackageName(String packageName)  {
+    if (this.overriddenPackageName == null)
+      this.overriddenPackageName = packageName;
+  }
   public void setWorkDirectory(Path workDirectory) throws IOException {
     this.workDirectory = requireNonNull(workDirectory, "Work directory cannot be null").toAbsolutePath();
     Files.createDirectories(this.workDirectory);

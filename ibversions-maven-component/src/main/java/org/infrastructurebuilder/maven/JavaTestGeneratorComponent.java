@@ -2,8 +2,10 @@ package org.infrastructurebuilder.maven;
 
 import javax.inject.Named;
 
+import org.eclipse.sisu.Typed;
+
 @Named(JavaTestGeneratorComponent.JAVA_TEST)
-//@Typed(GeneratorComponent.class)
+@Typed(GeneratorComponent.class)
 public class JavaTestGeneratorComponent extends GeneratorComponent {
 
   static final String JAVA_TEST = "java-test";

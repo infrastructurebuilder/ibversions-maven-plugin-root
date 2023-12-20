@@ -32,7 +32,6 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 @Mojo(name = GenerateJavaMojo.GENERATE_JAVA_VERSION, defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = false)
 public class GenerateJavaMojo extends AbstractGenerateMojo {
 
-
   public static final String GENERATE_JAVA_VERSION = "generate-source-version";
 
   @Parameter(defaultValue = "${project.build.directory}/generated-sources/generated-version", required = true, readonly = true)
@@ -62,13 +61,14 @@ public class GenerateJavaMojo extends AbstractGenerateMojo {
   }
 
   @Inject
-  public GenerateJavaMojo(BuildContext b, @Named("default") MavenResourcesFiltering f, Map<String, GeneratorComponent> components) {
-    super(b,f,components);
+  public GenerateJavaMojo(BuildContext b, @Named("default") MavenResourcesFiltering f,
+      Map<String, GeneratorComponent> components)
+  {
+    super(b, f, components);
   }
 
   @Override
   protected boolean isTestGeneration() {
     return false;
   }
-
 }

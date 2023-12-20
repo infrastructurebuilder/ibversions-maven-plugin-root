@@ -2,8 +2,10 @@ package org.infrastructurebuilder.maven;
 
 import javax.inject.Named;
 
+import org.eclipse.sisu.Typed;
+
 @Named(JavaGeneratorComponent.JAVA)
-//@Typed(GeneratorComponent.class)
+@Typed(GeneratorComponent.class)
 public class JavaGeneratorComponent extends GeneratorComponent {
 
   static final String JAVA = "java";

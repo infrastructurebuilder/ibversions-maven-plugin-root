@@ -9,6 +9,7 @@ import java.util.Optional;
 public class IBVersionsComponentExecutionResult {
 
   private String classFromArtifactId;
+  private String targetPackageName;
   private Path testSources;
   private Path sources;
   private List<Path> addedSources = new ArrayList<>();
@@ -19,6 +20,14 @@ public class IBVersionsComponentExecutionResult {
 
   public String getClassFromArtifactId() {
     return this.classFromArtifactId;
+  }
+
+  public void setTargetPackageName(String targetPackageName) {
+    this.targetPackageName = targetPackageName;
+  }
+
+  public String getTargetPackageName() {
+    return targetPackageName;
   }
 
   public void setSource(Path outputDirectory, boolean test) {
@@ -37,7 +46,7 @@ public class IBVersionsComponentExecutionResult {
   }
 
   public void addSourceToCompile(Path source) {
-    this.addedSources .add(source);
+    this.addedSources.add(source);
   }
 
   public List<Path> getAddedSources() {

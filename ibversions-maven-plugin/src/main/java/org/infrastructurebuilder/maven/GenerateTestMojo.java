@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
-@Mojo(name = GenerateTestMojo.GENERATE_JAVA_TEST_VERSION, defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, threadSafe = true)
+@Mojo(name = GenerateTestMojo.GENERATE_JAVA_TEST_VERSION, defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, threadSafe = false)
 public class GenerateTestMojo extends AbstractGenerateMojo {
 
   public static final String GENERATE_JAVA_TEST_VERSION = "generate-test-version";

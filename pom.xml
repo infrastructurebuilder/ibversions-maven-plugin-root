@@ -14,7 +14,7 @@ permissions
 
 	<groupId>org.infrastructurebuilder.maven</groupId>
 	<artifactId>ibversions-maven-plugin-root</artifactId>
-	<version>0.20.1-SNAPSHOT</version>
+	<version>0.21.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}</name>
@@ -87,7 +87,7 @@ permissions
 		<jacoco.ut.execution.dest.file>${jacoco.ut.execution.data.file}</jacoco.ut.execution.dest.file>
 		<jacoco.skip>false</jacoco.skip>
 		<semver4j.version>3.2.0.3</semver4j.version>
-		<ibexceptions.version>98</ibexceptions.version>
+		<ibexceptions.version>99</ibexceptions.version>
 		<iblog.version>0.14.4</iblog.version>
 		<gpg.signing.profiles>release,IBgpgsigning</gpg.signing.profiles>
 		<junit.jupiter.version>5.10.1</junit.jupiter.version>
@@ -183,7 +183,6 @@ permissions
 			<groupId>org.infrastructurebuilder</groupId>
 			<artifactId>ibexceptions</artifactId>
 			<version>${ibexceptions.version}</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

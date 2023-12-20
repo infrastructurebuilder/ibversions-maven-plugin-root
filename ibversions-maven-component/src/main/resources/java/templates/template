@@ -1,4 +1,4 @@
-package @project.groupId@;
+package @__targetVersionsPackageName@;
 
 @javax.inject.Named(
       @classFromProjectArtifactId@ .COMPONENTVERSIONNAME)
